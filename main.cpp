@@ -1,6 +1,5 @@
-#include <iostream>
+#include "r-tree/r_tree.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
     return 0;
 }
