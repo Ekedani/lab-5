@@ -1,10 +1,18 @@
 //Вероятнее всего, релизить мы будем R*, так как он более эффективный, но сложно быть не должно
 //Ссылка на эту дичь https://habr.com/ru/post/224965/
 #include <vector>
+
+//Будет использоваться как угол ограничивающего прямоугольника
+struct Point {
+    double latitude;
+    double longitude;
+};
+
 //Узел дерева
 template <class T>
 struct Node{
     //засунуть сюда координаты углов прямоугольника ещё
+    Point left, right;
     std::vector<T> objects;
     std::vector<Node<T>> nodes;
 };
