@@ -1,8 +1,8 @@
 #include <string>
 
 struct Place{
-    double latitude; //широта
     double longitude; //долгота
+    double latitude; //широта
     std::string type;
     std::string subtype;
     std::string name;

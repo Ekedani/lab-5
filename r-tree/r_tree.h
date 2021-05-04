@@ -1,18 +1,12 @@
 //Вероятнее всего, релизить мы будем R*, так как он более эффективный, но сложно быть не должно
 //Ссылка на эту дичь https://habr.com/ru/post/224965/
 #include <vector>
-
-//Будет использоваться как угол ограничивающего прямоугольника
-struct Point {
-    double latitude;
-    double longitude;
-};
+#include "Rectangle.h"
 
 //Узел дерева
 template <class T>
 struct Node{
-    //засунуть сюда координаты углов прямоугольника ещё
-    Point left, right;
+    Rectangle MBR;
     std::vector<T> objects;
     std::vector<Node<T>> nodes;
 };
@@ -36,6 +30,8 @@ private:
 
 public:
     //TODO: Алгоритм выбора поддерева (chooseSubtree)
+    Node<T>* chooseSubtree(T new_node);
+    Node<T>* chooseSubtree(Node<T>* start, T new_node); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
     //TODO: Алгоритм деления узла (splitNode)
 
