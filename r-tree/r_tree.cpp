@@ -1,16 +1,25 @@
 #include "r_tree.h"
 
-template<class T>
-Node<T> *rTree<T>::chooseSubtree(T new_node) {
-    return chooseSubtree(root);
+Node* rTree::chooseSubtree(Place new_place) {
+    return chooseSubtree(root, new_place);
 }
 
-template<class T>
-Node<T> *rTree<T>::chooseSubtree(Node<T> *start, T new_node) {
-    if (start->nodes.size()==0){
+Node* rTree::chooseSubtree(Node *start, Place new_place) {
+    if (start->isLeaf()){
         return start;
     } else {
-        Node<T>* chosen;
+        Node* chosen;
+        bool thereIsNoLeaves = true;
+        for (int i = 0; i < start->nodes.size(); ++i) {
+            if (start->nodes[i].isLeaf()){
+                thereIsNoLeaves = false;
+                //TODO: выбрать из листков тот, у которого наименьшим образом возрастает пересечение
+            }
+        }
+
+        if (thereIsNoLeaves) {
+            //TODO: выбрать узел с наименьшим увеличением площади MBR
+        }
         //TODO: весь алгоритм вообще-то. Я просто отвлекся на прямоугольники.
     }
 }

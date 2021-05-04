@@ -17,5 +17,9 @@ public:
         left = l;
         right = r;
     }
+    bool isInside(Point point);
+    double area();
+    Rectangle extendRectangleToPoint(Point point);
+    double HowMuchIncreasesTheArea(Point point);
     double overlap(Rectangle* rec1);
 };
