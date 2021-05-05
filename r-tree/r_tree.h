@@ -30,7 +30,7 @@ private:
     // что наилучшая производительность данной структуры достигается при minCount = maxCount * 40%.
 
 public:
-    //TODO: Алгоритм выбора поддерева (chooseSubtree)
+    //TODO: сделать выбор листка, см.тело методов ниже
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
