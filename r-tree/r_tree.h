@@ -1,32 +1,38 @@
-//Вероятнее всего, релизить мы будем R*, так как он более эффективный, но сложно быть не должно
-//Ссылка на эту дичь https://habr.com/ru/post/224965/
+#include <vector>
+#include "../data/place.h"
+#include "Rectangle.h"
 
 //Узел дерева
-template <class T>
 struct Node{
-    //Я еще смутно представляю структуру узлов этого дерева, но что-то придумаем
-    T data;
+    Rectangle MBR;
+    std::vector<Place> objects;
+    std::vector<Node> nodes;
+    bool isLeaf(){
+        if (nodes.empty()) return true;
+        return false;
+    }
 };
 
 //Само дерево
-template <class T>
 class rTree {
 private:
     //Корень дерева
-    Node<T> *root;
+    Node *root;
 
     //Каждый узел дерева имеет минимальное (minCount) и максимальное (maxCount) количество объектов.
     //Для корректной работы алгоритмов построения дерева нужно, что бы 2 <= minCount <= maxCount / 2
 
     //Минимальное и максимальное количество элементов в узле
-    int minCount;
-    int maxCount;
+    const static int minCount = 6;
+    const static int maxCount = 16;
 
     //Авторы R*-дерева в своей статье утверждают,
     // что наилучшая производительность данной структуры достигается при minCount = maxCount * 40%.
 
 public:
-    //TODO: Алгоритм выбора поддерева (chooseSubtree)
+    //TODO: сделать выбор листка, см.тело методов ниже
+    Node* chooseSubtree(Place new_place);
+    Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
     //TODO: Алгоритм деления узла (splitNode)
 
