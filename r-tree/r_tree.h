@@ -1,22 +1,23 @@
-//Вероятнее всего, релизить мы будем R*, так как он более эффективный, но сложно быть не должно
-//Ссылка на эту дичь https://habr.com/ru/post/224965/
 #include <vector>
+#include "../data/place.h"
 #include "Rectangle.h"
 
 //Узел дерева
-template <class T>
 struct Node{
     Rectangle MBR;
-    std::vector<T> objects;
-    std::vector<Node<T>> nodes;
+    std::vector<Place> objects;
+    std::vector<Node> nodes;
+    bool isLeaf(){
+        if (nodes.empty()) return true;
+        return false;
+    }
 };
 
 //Само дерево
-template <class T> // T - обьекты, которые должны храниться в прямугольничках. Например точки на карте
 class rTree {
 private:
     //Корень дерева
-    Node<T> *root;
+    Node *root;
 
     //Каждый узел дерева имеет минимальное (minCount) и максимальное (maxCount) количество объектов.
     //Для корректной работы алгоритмов построения дерева нужно, что бы 2 <= minCount <= maxCount / 2
@@ -29,9 +30,9 @@ private:
     // что наилучшая производительность данной структуры достигается при minCount = maxCount * 40%.
 
 public:
-    //TODO: Алгоритм выбора поддерева (chooseSubtree)
-    Node<T>* chooseSubtree(T new_node);
-    Node<T>* chooseSubtree(Node<T>* start, T new_node); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
+    //TODO: сделать выбор листка, см.тело методов ниже
+    Node* chooseSubtree(Place new_place);
+    Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
     //TODO: Алгоритм деления узла (splitNode)
 

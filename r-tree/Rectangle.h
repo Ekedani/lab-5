@@ -3,7 +3,7 @@ struct Point {
     double x;
     double y;
     Point(){}
-    Point(int vx, int vy){
+    Point(double vx, double vy){
         x = vx;
         y = vy;
     }
@@ -17,5 +17,10 @@ public:
         left = l;
         right = r;
     }
-    double overlap(Rectangle* rec1);
+    bool isInside(Point point);
+    double area();
+    Rectangle extendRectangleToPoint(Point point);
+    double HowMuchIncreasesTheArea(Point point); //насколько вырастет площадь MBR если туда засунуть point
+    double overlap(Rectangle* rec1);//площадь пересечения this и rec1. Я не знаю нужно ли это, не до конца разобрался
+    //но на всякий случай пусть будет
 };
