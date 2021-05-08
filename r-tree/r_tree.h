@@ -4,9 +4,10 @@
 
 //Узел дерева
 struct Node{
+    Node *parentNode;
     Rectangle MBR;
-    std::vector<Place> objects;
-    std::vector<Node> nodes;
+    std::vector<Place*> objects;
+    std::vector<Node*> nodes;
     bool isLeaf(){
         if (nodes.empty()) return true;
         return false;
@@ -28,6 +29,20 @@ private:
 
     //Авторы R*-дерева в своей статье утверждают,
     // что наилучшая производительность данной структуры достигается при minCount = maxCount * 40%.
+
+    //Если узел переполнен при вставке точки
+    //void splitNode(Node *curNode, Place curPlace){
+//
+    //    //В случае если является корнем дерева
+    //    if(curNode == root){
+    //      Node newRoot;
+//
+    //    }
+    //    //В случае если он им не является
+    //    else{
+//
+    //    }
+    //}
 
 public:
     //TODO: сделать выбор листка, см.тело методов ниже
