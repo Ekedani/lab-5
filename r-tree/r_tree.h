@@ -1,4 +1,5 @@
 #include <vector>
+#include <cfloat>
 #include "../data/place.h"
 #include "Rectangle.h"
 
@@ -20,18 +21,12 @@ private:
     //Корень дерева
     Node *root;
 
-    //Каждый узел дерева имеет минимальное (minCount) и максимальное (maxCount) количество объектов.
-    //Для корректной работы алгоритмов построения дерева нужно, что бы 2 <= minCount <= maxCount / 2
-
     //Минимальное и максимальное количество элементов в узле
     const static int minCount = 6;
     const static int maxCount = 16;
 
-    //Авторы R*-дерева в своей статье утверждают,
-    // что наилучшая производительность данной структуры достигается при minCount = maxCount * 40%.
-
     //Если узел переполнен при вставке точки
-    void splitNode(Node *curNode, Place curPlace){
+    void splitLeafNode(Node *curNode, Place curPlace){
 
         Node *nodeParent;
         //В случае если является корнем дерева
@@ -56,6 +51,32 @@ private:
         //Дальше будет создание узлов, выбор оси и моменты, которые у нас еще не готовы
     }
 
+    //0 - ось X, 1 - ось Y
+    bool splitLeafAxis(Node *curNode, Place curPlace){
+        Place **newPlaces = new Place*[maxCount + 1];
+        for (int i = 0; i < maxCount; ++i){
+            newPlaces[i] = curNode->objects[i];
+        }
+        newPlaces[maxCount + 1] = &curPlace;
+
+        Node firstNode;
+        Node secondNode;
+
+        double minimalPerimeter = DBL_MAX;
+
+        //0 - ось X, 1 - ось Y
+        for (int i = 0; i < 2; ++i){
+            double curPerimeter = 0;
+            //Сортировка по осям
+
+            //Периметры узлов во всех возможных комбинациях
+
+            //Выбор оси в зависимости от минимального
+        }
+
+        //Возврат выбраной оси
+    }
+    
 public:
     //TODO: сделать выбор листка, см.тело методов ниже
     Node* chooseSubtree(Place new_place);
