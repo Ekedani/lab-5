@@ -31,18 +31,30 @@ private:
     // что наилучшая производительность данной структуры достигается при minCount = maxCount * 40%.
 
     //Если узел переполнен при вставке точки
-    //void splitNode(Node *curNode, Place curPlace){
-//
-    //    //В случае если является корнем дерева
-    //    if(curNode == root){
-    //      Node newRoot;
-//
-    //    }
-    //    //В случае если он им не является
-    //    else{
-//
-    //    }
-    //}
+    void splitNode(Node *curNode, Place curPlace){
+
+        Node *nodeParent;
+        //В случае если является корнем дерева
+        if(curNode == root){
+           Node newRoot;
+           nodeParent = &newRoot;
+           curNode->parentNode = nodeParent;
+           nodeParent->nodes.push_back(curNode);
+           root = nodeParent;
+        }
+        //В случае если он им не является
+        else{
+            nodeParent = curNode->parentNode;
+        }
+
+        Place **newPlaces = new Place*[maxCount + 1];
+        for (int i = 0; i < maxCount; ++i){
+            newPlaces[i] = curNode->objects[i];
+        }
+        newPlaces[maxCount + 1] = &curPlace;
+
+        //Дальше будет создание узлов, выбор оси и моменты, которые у нас еще не готовы
+    }
 
 public:
     //TODO: сделать выбор листка, см.тело методов ниже
