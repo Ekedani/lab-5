@@ -65,12 +65,11 @@ private:
         //0 - ось X, 1 - ось Y
         for (int i = 0; i < 2; ++i){
             double curPerimeter = 0;
-            //TODO: ну ты понял
             if(i){
-                //qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort());
+                qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort);
             }
             else{
-                //qsort(newPlaces, maxCount + 1, sizeof(double), longAxisSort());
+                qsort(newPlaces, maxCount + 1, sizeof(double), longAxisSort);
             }
 
             //Периметры узлов во всех возможных комбинациях
@@ -81,13 +80,35 @@ private:
         //Возврат выбраной оси
     }
 
-
     //Сравнение по оси X (Lat)
-    double latAxisSort (const void *curPlace1, const void *curPlace2){
+    static int latAxisSort (const void *a, const void *b){
+        const Place arg1 = *(static_cast<const Place*>(a));
+        const Place arg2 = *(static_cast<const Place*>(b));
+        if(arg1.latitude == arg2.latitude){
+            return 0;
+        }
+        else{
+            if(arg1.latitude < arg2.latitude){
+                return -1;
+            }
+            return 1;
+        }
+
     }
 
     //Сравнение по оси Y (Long)
-    double longAxisSort (const void *curPlace1, const void *curPlace2){
+    static int longAxisSort (const void *a, const void *b){
+        const Place arg1 = *(static_cast<const Place*>(a));
+        const Place arg2 = *(static_cast<const Place*>(b));
+        if(arg1.longitude == arg2.longitude){
+            return 0;
+        }
+        else{
+            if(arg1.longitude < arg2.longitude){
+                return -1;
+            }
+            return 1;
+        }
     }
 
 public:
