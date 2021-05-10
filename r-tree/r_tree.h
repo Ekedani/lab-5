@@ -65,6 +65,8 @@ private:
         //0 - ось X, 1 - ось Y
         for (int i = 0; i < 2; ++i){
             double curPerimeter = 0;
+
+            //Сортировка массива по оси
             if(i){
                 qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort);
             }
@@ -72,12 +74,27 @@ private:
                 qsort(newPlaces, maxCount + 1, sizeof(double), longAxisSort);
             }
 
-            //Периметры узлов во всех возможных комбинациях
+            //Есть вероятность, что тут могут быть проблемы с индексами
+            for (int j = 1; i <= maxCount - minCount * 2 + 2; ++j) {
 
-            //Выбор оси в зависимости от минимального
+                int curPlace = 0;
+                for (curPlace; curPlace < minCount - 1 + j; ++curPlace) {
+                    firstNode.objects.push_back(newPlaces[curPlace]);
+                }
+                for (curPlace; curPlace <= maxCount; ++curPlace) {
+                    secondNode.objects.push_back(newPlaces[curPlace]);
+                }
+
+                //TODO: Обновить MBR для этих объектов (Новый метод)
+
+                //TODO: Написать метод периметра для MBR, не хочу тут код засорять
+
+            }
+
+            //TODO: Сравнение минимального и текущего периметра/выбор оси
         }
-
-        //Возврат выбраной оси
+        
+        //TODO: Возврат выбраной оси
     }
 
     //Сравнение по оси X (Lat)
@@ -116,11 +133,7 @@ public:
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
-    //TODO: Алгоритм деления узла (splitNode)
-
     void insertPlace(const Place& curPlace);
 
     //TODO: Поиск объектов в заданом радиусе (findObjectsInArea)
-
-    //TODO: Так же, если я не ошибаюсь, R* требует регулировки некоторых параметров при splitNode
 };
