@@ -32,3 +32,7 @@ Node* rTree::chooseSubtree(Node *start, Place new_place) {
     
     return chooseSubtree(chosen, new_place);
 }
+
+void rTree::insertPlace(const Place& curPlace) {
+
+}

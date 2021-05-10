@@ -45,7 +45,7 @@ private:
         for (int i = 0; i < maxCount; ++i){
             newPlaces[i] = curNode->objects[i];
         }
-        newPlaces[maxCount + 1] = &curPlace;
+        newPlaces[maxCount] = &curPlace;
 
         //Дальше будет создание узлов, выбор оси и моменты, которые у нас еще не готовы
     }
@@ -55,7 +55,7 @@ private:
         for (int i = 0; i < maxCount; ++i){
             newPlaces[i] = curNode->objects[i];
         }
-        newPlaces[maxCount + 1] = &curPlace;
+        newPlaces[maxCount] = &curPlace;
 
         Node firstNode;
         Node secondNode;
@@ -118,7 +118,7 @@ public:
 
     //TODO: Алгоритм деления узла (splitNode)
 
-    //TODO: Собственно сама вставка (insertObject)
+    void insertPlace(const Place& curPlace);
 
     //TODO: Поиск объектов в заданом радиусе (findObjectsInArea)
 
