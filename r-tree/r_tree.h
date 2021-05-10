@@ -31,8 +31,7 @@ private:
         Node *nodeParent;
         //В случае если является корнем дерева
         if(curNode == root){
-           Node newRoot;
-           nodeParent = &newRoot;
+           nodeParent = new Node;
            curNode->parentNode = nodeParent;
            nodeParent->nodes.push_back(curNode);
            root = nodeParent;
@@ -51,7 +50,6 @@ private:
         //Дальше будет создание узлов, выбор оси и моменты, которые у нас еще не готовы
     }
 
-    //0 - ось X, 1 - ось Y
     bool splitLeafAxis(Node *curNode, Place curPlace){
         Place **newPlaces = new Place*[maxCount + 1];
         for (int i = 0; i < maxCount; ++i){
@@ -67,7 +65,13 @@ private:
         //0 - ось X, 1 - ось Y
         for (int i = 0; i < 2; ++i){
             double curPerimeter = 0;
-            //Сортировка по осям
+            //TODO: ну ты понял
+            if(i){
+                //qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort());
+            }
+            else{
+                //qsort(newPlaces, maxCount + 1, sizeof(double), longAxisSort());
+            }
 
             //Периметры узлов во всех возможных комбинациях
 
@@ -76,7 +80,16 @@ private:
 
         //Возврат выбраной оси
     }
-    
+
+
+    //Сравнение по оси X (Lat)
+    double latAxisSort (const void *curPlace1, const void *curPlace2){
+    }
+
+    //Сравнение по оси Y (Long)
+    double longAxisSort (const void *curPlace1, const void *curPlace2){
+    }
+
 public:
     //TODO: сделать выбор листка, см.тело методов ниже
     Node* chooseSubtree(Place new_place);
