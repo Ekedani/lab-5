@@ -52,3 +52,22 @@ double Rectangle::perimeter() {
     double height = this->right.y - this->left.y;
     return 2*(width+height);
 }
+
+double Rectangle::overallPerimeter(Rectangle* rec1) {
+    //Координаты прямоугольника в пересечении
+    double left_coord = std::max(this->left.x, rec1->left.x);
+    double top_coord = std::min(this->right.y, rec1->right.y);
+    double right_coord = std::min(this->right.x, rec1->right.x);
+    double bottom_coord = std::max(this->left.y, rec1->left.y);
+
+    //длины сторон получившегося прямоугольника
+    double width = right_coord - left_coord;
+    double height = top_coord - bottom_coord;
+    double intersection_perimeter;
+    if (width<0 || height<0) {
+        intersection_perimeter = 0;
+    } else {
+        intersection_perimeter = 2*(width+height);
+    }
+    return this->perimeter()+rec1->perimeter()-intersection_perimeter;
+}

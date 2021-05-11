@@ -11,14 +11,14 @@ Node* rTree::chooseSubtree(Node *start, Place new_place) {
     } else {
         int index;
         Point point (new_place.longitude,new_place.latitude);
-        double minimal_mbr_increasing_area = 999999999;
+        double minimal_mbr_increasing_area = DBL_MAX;
         std::vector<int> chosen_nodes;
         for (int i = 0; i < start->nodes.size(); ++i) {
             if (start->nodes[i]->MBR.HowMuchIncreasesTheArea(point) < minimal_mbr_increasing_area){
                 minimal_mbr_increasing_area = start->nodes[i]->MBR.HowMuchIncreasesTheArea(point);
             }
         }
-        double minimal_area = 999999999;
+        double minimal_area = DBL_MAX;
         for (int i = 0; i < start->nodes.size(); ++i) {
             if (start->nodes[i]->MBR.HowMuchIncreasesTheArea(point) == minimal_mbr_increasing_area) {
                 if (start->nodes[i]->MBR.area() < minimal_area) {

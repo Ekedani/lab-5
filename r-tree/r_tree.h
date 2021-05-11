@@ -14,7 +14,7 @@ struct Node{
         return false;
     }
     void updateMBR(){
-        //предполагаю, что хотя бы одна точка там всё же есть. ну можно проверку дописать позже
+        if (isLeaf()) return;
         MBR = Rectangle(Point(objects[0]->longitude,objects[0]->latitude),Point(objects[0]->longitude,objects[0]->latitude));
         for (int i = 1; i < objects.size(); ++i) {
             MBR.extendRectangleToPoint(Point(objects[i]->longitude,objects[i]->latitude));
@@ -94,13 +94,18 @@ private:
 
                 firstNode.updateMBR();
                 secondNode.updateMBR();
+                curPerimeter+=firstNode.MBR.overallPerimeter(&secondNode.MBR);
 
             }
-
-            //TODO: Сравнение минимального и текущего периметра/выбор оси
+            if (curPerimeter <= minimalPerimeter) {
+                minimalPerimeter = curPerimeter;
+            }
+            if (i) {
+                if (curPerimeter <= minimalPerimeter) {
+                    return 1;
+                } else return 0;
+            }
         }
-        
-        //TODO: Возврат выбраной оси
     }
 
     //Сравнение по оси X (Lat)
