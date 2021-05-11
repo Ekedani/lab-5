@@ -46,3 +46,9 @@ double Rectangle::HowMuchIncreasesTheArea(Point point) {
     double difference = extendRectangleToPoint(point).area() - this->area();
     return difference;
 }
+
+double Rectangle::perimeter() {
+    double width = this->right.x - this->left.x;
+    double height = this->right.y - this->left.y;
+    return 2*(width+height);
+}

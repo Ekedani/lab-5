@@ -13,6 +13,13 @@ struct Node{
         if (nodes.empty()) return true;
         return false;
     }
+    void updateMBR(){
+        //предполагаю, что хотя бы одна точка там всё же есть. ну можно проверку дописать позже
+        MBR = Rectangle(Point(objects[0]->longitude,objects[0]->latitude),Point(objects[0]->longitude,objects[0]->latitude));
+        for (int i = 1; i < objects.size(); ++i) {
+            MBR.extendRectangleToPoint(Point(objects[i]->longitude,objects[i]->latitude));
+        }
+    }
 };
 
 //Само дерево
@@ -85,9 +92,8 @@ private:
                     secondNode.objects.push_back(newPlaces[curPlace]);
                 }
 
-                //TODO: Обновить MBR для этих объектов (Новый метод)
-
-                //TODO: Написать метод периметра для MBR, не хочу тут код засорять
+                firstNode.updateMBR();
+                secondNode.updateMBR();
 
             }
 
@@ -129,7 +135,6 @@ private:
     }
 
 public:
-    //TODO: сделать выбор листка, см.тело методов ниже
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 

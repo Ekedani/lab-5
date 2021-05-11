@@ -19,6 +19,7 @@ public:
     }
     bool isInside(Point point);
     double area();
+    double perimeter();
     Rectangle extendRectangleToPoint(Point point);
     double HowMuchIncreasesTheArea(Point point); //насколько вырастет площадь MBR если туда засунуть point
     double overlap(Rectangle* rec1);//площадь пересечения this и rec1. Я не знаю нужно ли это, не до конца разобрался
