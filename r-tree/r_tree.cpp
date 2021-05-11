@@ -33,6 +33,20 @@ Node* rTree::chooseSubtree(Node *start, Place new_place) {
     return chooseSubtree(chosen, new_place);
 }
 
-void rTree::insertPlace(const Place& curPlace) {
+//Вставка места в дерево
+void rTree::insertPlace(Place& curPlace) {
+    Node *chosenNode = chooseSubtree(root, curPlace);
+    Place *ptrToPlace = &curPlace;
 
+    //Если узел не переполнен
+    if(chosenNode->nodes.size() < maxCount){
+        chosenNode->objects.push_back(ptrToPlace);
+        while(chosenNode != NULL){
+            chosenNode->updateMBR();
+            chosenNode = chosenNode->parentNode;
+        }
+    }
+    else{
+        splitLeafNode(chosenNode, curPlace);
+    }
 }

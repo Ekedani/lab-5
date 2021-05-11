@@ -94,7 +94,7 @@ private:
 
                 firstNode.updateMBR();
                 secondNode.updateMBR();
-                curPerimeter+=firstNode.MBR.overallPerimeter(&secondNode.MBR);
+                curPerimeter += firstNode.MBR.overallPerimeter(&secondNode.MBR);
 
             }
             if (curPerimeter <= minimalPerimeter) {
@@ -143,7 +143,7 @@ public:
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
-    void insertPlace(const Place& curPlace);
+    void insertPlace(Place& curPlace);
 
     //TODO: Поиск объектов в заданом радиусе (findObjectsInArea)
 };
