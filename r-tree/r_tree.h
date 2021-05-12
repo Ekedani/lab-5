@@ -46,14 +46,13 @@ private:
     const static int minCount = 6;
     const static int maxCount = 16;
 
-
+    //Методы, что используются во вставке элемента
+    void splitNotLeafNode(Node *curNode, Node *insertedNode);
     void splitLeafNode(Node *curNode, Place curPlace);
-
     bool splitLeafAxis(Node *curNode, Place curPlace);
-
     static int latAxisSort (const void *a, const void *b);
-
     static int longAxisSort (const void *a, const void *b);
+    bool splitNotLeafAxis(Node *curNode, Node *insertedNode);
 
 public:
     Node* chooseSubtree(Place new_place);

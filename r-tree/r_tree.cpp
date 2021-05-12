@@ -126,8 +126,39 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         curNode->parentNode->updateMBR();
     }
     else{
-        //TODO: Разделение родительского узла
+        splitNotLeafNode(curNode->parentNode, minimalSecondNode);
     }
+}
+
+void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
+
+    Node *nodeParent;
+    //В случае если является корнем дерева
+    if(curNode == root){
+        nodeParent = new Node;
+        curNode->parentNode = nodeParent;
+        nodeParent->nodes.push_back(curNode);
+        root = nodeParent;
+    }
+    //В случае если он им не является
+    else{
+        nodeParent = curNode->parentNode;
+    }
+
+    //Копирование узлов
+    Node **newNodes = new Node*[maxCount + 1];
+    for (int i = 0; i < maxCount; ++i){
+        newNodes[i] = curNode->nodes[i];
+    }
+    newNodes[maxCount] = insertedNode;
+
+    bool axisIsX = !splitLeafAxis(curNode, insertedNode);
+
+    Node* firstNode;
+    Node* secondNode;
+    Node* minimalFirstNode;
+    Node* minimalSecondNode;
+
 }
 
 bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
@@ -194,7 +225,10 @@ int rTree::latAxisSort (const void *a, const void *b){
         }
         return 1;
     }
+}
 
+bool rTree::splitNotLeafAxis(Node *curNode, Node *insertedNode){
+    //TODO: выбор оси
 }
 
 //Сравнение по оси Y (Long)
