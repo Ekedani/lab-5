@@ -58,10 +58,10 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
     //Выбор оси разделения
     bool axisIsX = !splitLeafAxis(curNode, curPlace);
 
-    Node firstNode;
-    Node secondNode;
-    Node minimalFirstNode;
-    Node minimalSecondNode;
+    Node* firstNode;
+    Node* secondNode;
+    Node* minimalFirstNode;
+    Node* minimalSecondNode;
 
     double minimalOverlap = DBL_MAX;
     double minimalArea = DBL_MAX;
@@ -79,40 +79,51 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
     //и ноды бы заново создавать. не будет работать так
     for (int j = minCount - 1; j <= maxCount - minCount; ++j) {
 
+        firstNode = new Node;
+        secondNode = new Node;
+
         int curPlace = 0;
         for (curPlace; curPlace <= j; curPlace++) {
-            firstNode.objects.push_back(newPlaces[curPlace]);
+            firstNode->objects.push_back(newPlaces[curPlace]);
         }
         for (curPlace; curPlace < maxCount - 1; curPlace++) {
-            secondNode.objects.push_back(newPlaces[curPlace + 1]);
+            secondNode->objects.push_back(newPlaces[curPlace + 1]);
         }
 
-        firstNode.updateMBR();
-        secondNode.updateMBR();
+        firstNode->updateMBR();
+        secondNode->updateMBR();
 
-        //Перекрытие
+        //TODO: Перекрытие
         //curOverlap = firstNode.MBR.overlap(secondNode.MBR)
 
         if(curOverlap < minimalOverlap){
             //TODO: Конструктор копирования для Node
-            minimalFirstNode = firstNode;
-            minimalSecondNode = secondNode;
+            *minimalFirstNode = *firstNode;
+            *minimalSecondNode = *secondNode;
             minimalOverlap = curOverlap;
         }
         else{
             if(curOverlap == minimalOverlap){
-                curArea = firstNode.MBR.area() + secondNode.MBR.area();
+                curArea = firstNode->MBR.area() + secondNode->MBR.area();
                 if(curArea < minimalArea){
-                    minimalFirstNode = firstNode;
-                    minimalSecondNode = secondNode;
+                    *minimalFirstNode = *firstNode;
+                    *minimalSecondNode = *secondNode;
                     minimalArea = curArea;
                 }
             }
         }
+        delete firstNode;
+        delete secondNode;
     }
-    //TODO: Перераспределение дочерних
+    //Бал сатаны
+    minimalFirstNode->parentNode = curNode->parentNode;
+    delete curNode;
+    curNode = minimalFirstNode;
+    minimalSecondNode->parentNode = curNode->parentNode;
+
     if(curNode->parentNode->nodes.size() < maxCount){
-        //TODO: Вставка и обновление MBR родителя
+        curNode->parentNode->nodes.push_back(minimalSecondNode);
+        curNode->parentNode->updateMBR();
     }
     else{
         //TODO: Разделение родительского узла
