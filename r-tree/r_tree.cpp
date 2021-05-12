@@ -60,8 +60,8 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
 
     Node* firstNode;
     Node* secondNode;
-    Node* minimalFirstNode;
-    Node* minimalSecondNode;
+    Node* minimalFirstNode = new Node;
+    Node* minimalSecondNode = new Node;
 
     double minimalOverlap = DBL_MAX;
     double minimalArea = DBL_MAX;
@@ -152,12 +152,18 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
     }
     newNodes[maxCount] = insertedNode;
 
-    bool axisIsX = !splitLeafAxis(curNode, insertedNode);
+    bool axisIsX = !splitNotLeafAxis(curNode, insertedNode);
 
     Node* firstNode;
     Node* secondNode;
-    Node* minimalFirstNode;
-    Node* minimalSecondNode;
+    Node* minimalFirstNode = new Node;
+    Node* minimalSecondNode = new Node;
+
+    double minimalOverlap = DBL_MAX;
+    double minimalArea = DBL_MAX;
+    double curOverlap;
+    double curArea;
+
 
 }
 
@@ -228,7 +234,51 @@ int rTree::latAxisSort (const void *a, const void *b){
 }
 
 bool rTree::splitNotLeafAxis(Node *curNode, Node *insertedNode){
-    //TODO: выбор оси
+    Node **newNodes = new Node*[maxCount + 1];
+    for (int i = 0; i < maxCount; ++i){
+        newNodes[i] = curNode->nodes[i];
+    }
+    newNodes[maxCount] = insertedNode;
+
+    double minimalPerimeter = DBL_MAX;
+
+    Node* firstNode;
+    Node* secondNode;
+    bool chosenAxis;
+    
+    //X = 0, Y = 1
+    for (int axis = 0; axis < 1; ++axis) {
+        double curPerimeter = 0;
+        for (int i = 0; i < 1; ++i) {
+            firstNode = new Node;
+            secondNode = new Node;
+
+            //TODO: Сортировка
+
+            //Поиск минимального периметра
+            for (int j = 1; j < maxCount - minCount * 2 + 2; ++j) {
+                int curNode = 0;
+                for(curNode; curNode < minCount - 1 + j; curNode++){
+                    firstNode->nodes.push_back(newNodes[curNode]);
+                }
+                for(curNode; curNode <= maxCount; curNode++){
+                    secondNode->nodes.push_back(newNodes[curNode]);
+                }
+
+                firstNode->updateMBR();
+                secondNode->updateMBR();
+
+                curPerimeter += firstNode->MBR.perimeter() + secondNode->MBR.perimeter();
+            }
+            if(curPerimeter <= minimalPerimeter){
+                minimalPerimeter = curPerimeter;
+                chosenAxis = i;
+            }
+            delete firstNode;
+            delete secondNode;
+        }
+    }
+    return chosenAxis;
 }
 
 //Сравнение по оси Y (Long)
