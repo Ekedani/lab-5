@@ -54,7 +54,67 @@ private:
         }
         newPlaces[maxCount] = &curPlace;
 
-        //Дальше будет создание узлов, выбор оси и моменты, которые у нас еще не готовы
+        //Выбор оси разделения
+        bool axisIsX = splitLeafAxis(curNode, curPlace);
+
+        Node firstNode;
+        Node secondNode;
+        Node minimalFirstNode;
+        Node minimalSecondNode;
+
+        double minimalOverlap = DBL_MAX;
+        double minimalArea = DBL_MAX;
+        double curOverlap;
+        double curArea;
+
+        if(axisIsX){
+            qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort);
+        }
+        else{
+            qsort(newPlaces, maxCount + 1, sizeof(double), longAxisSort);
+        }
+
+        //Пофиксить вероятный ужас с индексами
+        for (int j = minCount - 1; j <= maxCount - minCount; ++j) {
+
+            int curPlace = 0;
+            for (curPlace; curPlace <= j; curPlace++) {
+                firstNode.objects.push_back(newPlaces[curPlace]);
+            }
+            for (curPlace; curPlace < maxCount - 1; curPlace++) {
+                secondNode.objects.push_back(newPlaces[curPlace + 1]);
+            }
+
+            firstNode.updateMBR();
+            secondNode.updateMBR();
+
+            //Перекрытие
+            //curOverlap = firstNode.MBR.overlap(secondNode.MBR)
+
+            if(curOverlap < minimalOverlap){
+                //TODO: Конструктор копирования для Node
+                minimalFirstNode = firstNode;
+                minimalSecondNode = secondNode;
+                minimalOverlap = curOverlap;
+            }
+            else{
+                if(curOverlap == minimalOverlap){
+                    curArea = firstNode.MBR.area() + secondNode.MBR.area();
+                    if(curArea < minimalArea){
+                        minimalFirstNode = firstNode;
+                        minimalSecondNode = secondNode;
+                        minimalArea = curArea;
+                    }
+                }
+            }
+        }
+        //TODO: Перераспределение дочерних
+        if(curNode->parentNode->nodes.size() < maxCount){
+            //TODO: Вставка и обновление MBR родителя
+        }
+        else{
+            //TODO: Разделение родительского узла
+        }
     }
 
     bool splitLeafAxis(Node *curNode, Place curPlace){
@@ -82,7 +142,7 @@ private:
             }
 
             //Есть вероятность, что тут могут быть проблемы с индексами
-            for (int j = 1; i <= maxCount - minCount * 2 + 2; ++j) {
+            for (int j = 1; j <= maxCount - minCount * 2 + 2; ++j) {
 
                 int curPlace = 0;
                 for (curPlace; curPlace < minCount - 1 + j; ++curPlace) {
