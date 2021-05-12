@@ -71,3 +71,21 @@ double Rectangle::overallPerimeter(Rectangle* rec1) {
     }
     return this->perimeter()+rec1->perimeter()-intersection_perimeter;
 }
+
+bool Rectangle::isEmpty() {
+    if (this->right.x==DBL_MAX || this->right.y==DBL_MAX) {
+        return true;
+    }
+    if(this->left.x==DBL_MAX || this->left.y==DBL_MAX) {
+        return true;
+    }
+    return false;
+}
+
+const Point &Rectangle::getLeft() const {
+    return left;
+}
+
+const Point &Rectangle::getRight() const {
+    return right;
+}
