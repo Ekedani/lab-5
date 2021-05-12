@@ -272,7 +272,7 @@ bool rTree::splitNotLeafAxis(Node *curNode, Node *insertedNode){
             }
             if(curPerimeter <= minimalPerimeter){
                 minimalPerimeter = curPerimeter;
-                chosenAxis = i;
+                chosenAxis = axis;
             }
             delete firstNode;
             delete secondNode;
