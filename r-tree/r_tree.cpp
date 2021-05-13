@@ -493,7 +493,7 @@ void rTree::insertPlace(Place& curPlace) {
     Place *ptrToPlace = &curPlace;
 
     //Если узел не переполнен
-    if(chosenNode->nodes.size() < maxCount){
+    if(chosenNode->objects.size() < maxCount){
         chosenNode->objects.push_back(ptrToPlace);
         while(chosenNode != NULL){
             chosenNode->updateMBR();

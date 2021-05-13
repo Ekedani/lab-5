@@ -64,6 +64,11 @@ private:
     void sortForNotLeaf(Node **nodesArray, int axis, int bound);
 
 public:
+    rTree(){
+        root = new Node;
+        root->parentNode = nullptr;
+        root->updateMBR();
+    }
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
