@@ -184,11 +184,12 @@ bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
         double curPerimeter = 0;
 
         //Сортировка массива по оси
+        //TODO: проверить sizeOf
         if(i){
-            qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort);
+            qsort(newPlaces, maxCount + 1, sizeof(newPlaces[0]), latAxisSort);
         }
         else{
-            qsort(newPlaces, maxCount + 1, sizeof(double), longAxisSort);
+            qsort(newPlaces, maxCount + 1, sizeof(newPlaces[0]), longAxisSort);
         }
 
         //Есть вероятность, что тут могут быть проблемы с индексами
@@ -253,7 +254,7 @@ bool rTree::splitNotLeafAxis(Node *curNode, Node *insertedNode){
             firstNode = new Node;
             secondNode = new Node;
 
-            //TODO: Сортировка
+            sortForNotLeaf(newNodes, axis, i);
 
             //Поиск минимального периметра
             for (int j = 1; j < maxCount - minCount * 2 + 2; ++j) {
@@ -281,6 +282,29 @@ bool rTree::splitNotLeafAxis(Node *curNode, Node *insertedNode){
     return chosenAxis;
 }
 
+
+void rTree::sortForNotLeaf(Node **nodesArray, int axis, int bound){
+    if(bound == 0){
+        //TODO: проверить sizeOf
+        if(axis == 0){
+            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), latLeftAxisSort);
+        }
+        else{
+            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), longLeftAxisSort);
+        }
+    }
+    else{
+        if(axis == 0){
+            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), latRightAxisSort);
+        }
+        else{
+            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), longRightAxisSort);
+        }
+    }
+}
+
+
+//Сортировка для массива мест
 //Сравнение по оси Y (Long)
 int rTree::longAxisSort (const void *a, const void *b){
     const Place arg1 = *(static_cast<const Place*>(a));
@@ -295,6 +319,66 @@ int rTree::longAxisSort (const void *a, const void *b){
         return 1;
     }
 }
+
+
+//Вспомогательные функции для быстрой сортировки узла
+int rTree::longLeftAxisSort (const void *a, const void *b){
+    const Node arg1 = *(static_cast<const Node*>(a));
+    const Node arg2 = *(static_cast<const Node*>(b));
+    if(arg1.MBR.getLeft().y == arg2.MBR.getLeft().y){
+        return 0;
+    }
+    else{
+        if(arg1.MBR.getLeft().y < arg2.MBR.getLeft().y){
+            return -1;
+        }
+        return 1;
+    }
+}
+
+int rTree::longRightAxisSort (const void *a, const void *b){
+    const Node arg1 = *(static_cast<const Node*>(a));
+    const Node arg2 = *(static_cast<const Node*>(b));
+    if(arg1.MBR.getRight().y == arg2.MBR.getRight().y){
+        return 0;
+    }
+    else{
+        if(arg1.MBR.getRight().y < arg2.MBR.getRight().y){
+            return -1;
+        }
+        return 1;
+    }
+}
+
+int rTree::latLeftAxisSort (const void *a, const void *b){
+    const Node arg1 = *(static_cast<const Node*>(a));
+    const Node arg2 = *(static_cast<const Node*>(b));
+    if(arg1.MBR.getLeft().x == arg2.MBR.getLeft().x){
+        return 0;
+    }
+    else{
+        if(arg1.MBR.getLeft().x < arg2.MBR.getLeft().x){
+            return -1;
+        }
+        return 1;
+    }
+}
+
+int rTree::latRightAxisSort (const void *a, const void *b){
+    const Node arg1 = *(static_cast<const Node*>(a));
+    const Node arg2 = *(static_cast<const Node*>(b));
+    if(arg1.MBR.getRight().x == arg2.MBR.getRight().x){
+        return 0;
+    }
+    else{
+        if(arg1.MBR.getRight().x < arg2.MBR.getRight().x){
+            return -1;
+        }
+        return 1;
+    }
+}
+
+
 
 //Вставка места в дерево
 void rTree::insertPlace(Place& curPlace) {
@@ -313,3 +397,5 @@ void rTree::insertPlace(Place& curPlace) {
         splitLeafNode(chosenNode, curPlace);
     }
 }
+
+

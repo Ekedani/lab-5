@@ -49,10 +49,18 @@ private:
     //Методы, что используются во вставке элемента
     void splitNotLeafNode(Node *curNode, Node *insertedNode);
     void splitLeafNode(Node *curNode, Place curPlace);
-    bool splitLeafAxis(Node *curNode, Place curPlace);
+    static bool splitLeafAxis(Node *curNode, Place curPlace);
+
+    //Вспомогательные методы для быстрой сортировки
     static int latAxisSort (const void *a, const void *b);
     static int longAxisSort (const void *a, const void *b);
+    static int longLeftAxisSort (const void *a, const void *b);
+    static int longRightAxisSort (const void *a, const void *b);
+    static int latLeftAxisSort (const void *a, const void *b);
+    static int latRightAxisSort (const void *a, const void *b);
+
     bool splitNotLeafAxis(Node *curNode, Node *insertedNode);
+    void sortForNotLeaf(Node **nodesArray, int axis, int bound);
 
 public:
     Node* chooseSubtree(Place new_place);
