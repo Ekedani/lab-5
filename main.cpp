@@ -3,7 +3,7 @@
 int main() {
     rTree test;
     Place *testPlace;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 18; ++i) {
         testPlace = new Place;
         testPlace->latitude = i;
         testPlace->longitude = i;

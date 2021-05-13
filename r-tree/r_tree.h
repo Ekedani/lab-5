@@ -15,6 +15,18 @@ struct Node{
         if (nodes.empty()) return true;
         return false;
     }
+
+    void MBRoutput(){
+        std::cout << "LEFT: " << MBR.getLeft().x << " " << MBR.getLeft().y << " ";
+        std::cout << "RIGHT: " << MBR.getRight().x << " " << MBR.getRight().y << std::endl;
+    }
+
+    void nodeObjOutput(){
+        for (int i = 0; i < objects.size(); ++i) {
+            std::cout << objects[i]->name << std::endl;
+        }
+    }
+
     void updateMBR(){
         if (this->MBR.isEmpty()) {
             if (!objects.empty()) {

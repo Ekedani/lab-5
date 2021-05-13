@@ -86,8 +86,8 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         for (curPlace; curPlace <= j; curPlace++) {
             firstNode->objects.push_back(newPlaces[curPlace]);
         }
-        for (curPlace; curPlace < maxCount - 1; curPlace++) {
-            secondNode->objects.push_back(newPlaces[curPlace + 1]);
+        for (curPlace; curPlace <= maxCount; curPlace++) {
+            secondNode->objects.push_back(newPlaces[curPlace]);
         }
 
         firstNode->updateMBR();
@@ -96,9 +96,9 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         curOverlap = firstNode->MBR.overlap(&secondNode->MBR);
 
         if(curOverlap < minimalOverlap){
-            *minimalFirstNode = *firstNode;
-            *minimalSecondNode = *secondNode;
-            minimalOverlap = curOverlap;
+            minimalFirstNode = firstNode;
+            minimalSecondNode = secondNode;
+            continue;
         }
         else{
             if(curOverlap == minimalOverlap){
@@ -114,9 +114,16 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         delete secondNode;
     }
     //Бал сатаны
+    std::cout << minimalFirstNode->objects.size() << std::endl;
+    minimalFirstNode->nodeObjOutput();
+    minimalFirstNode->MBRoutput();
+    std::cout << minimalSecondNode->objects.size() << std::endl;
+    minimalSecondNode->nodeObjOutput();
+    minimalSecondNode->MBRoutput();
     minimalFirstNode->parentNode = curNode->parentNode;
     delete curNode;
     curNode = minimalFirstNode;
+    curNode->MBRoutput();
     minimalSecondNode->parentNode = curNode->parentNode;
 
     if(curNode->parentNode->nodes.size() < maxCount){
@@ -495,7 +502,7 @@ void rTree::insertPlace(Place& curPlace) {
     //Если узел не переполнен
     if(chosenNode->objects.size() < maxCount){
         chosenNode->objects.push_back(ptrToPlace);
-        while(chosenNode != nullptr){
+        while(chosenNode != NULL){
             chosenNode->updateMBR();
             chosenNode = chosenNode->parentNode;
         }
