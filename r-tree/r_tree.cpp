@@ -495,12 +495,49 @@ void rTree::insertPlace(Place& curPlace) {
     //Если узел не переполнен
     if(chosenNode->objects.size() < maxCount){
         chosenNode->objects.push_back(ptrToPlace);
-        while(chosenNode != NULL){
+        while(chosenNode != nullptr){
             chosenNode->updateMBR();
             chosenNode = chosenNode->parentNode;
         }
     }
     else{
         splitLeafNode(chosenNode, curPlace);
+    }
+}
+
+std::vector<Place*> rTree::findObjectInCircle(Point center, double radius){
+    Circle searchArea(center, radius);
+    std::vector<Place*> result;
+    if(root->isLeaf()){
+        for (auto & object : root->objects) {
+            if(searchArea.isInside(Point(object->longitude, object->latitude))){
+                result.push_back(object);
+            }
+        }
+    }
+    else{
+        for (auto & node : root->nodes) {
+            if(searchArea.doesIntersect(node->MBR)){
+                findObjectsInCircle(searchArea, node, result);
+            }
+        }
+    }
+    return result;
+}
+
+void rTree::findObjectsInCircle(Circle searchArea, Node* curArea, std::vector<Place*> &result){
+    if(curArea->isLeaf()){
+        for (auto & object : curArea->objects) {
+            if(searchArea.isInside(Point(object->longitude, object->latitude))){
+                result.push_back(object);
+            }
+        }
+    }
+    else{
+        for (auto & node : curArea->nodes) {
+            if(searchArea.doesIntersect(node->MBR)){
+                findObjectsInCircle(searchArea, node, result);
+            }
+        }
     }
 }

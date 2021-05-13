@@ -1,4 +1,5 @@
 #include <vector>
+#include "Circle.h"
 #include <cfloat>
 #include "../data/place.h"
 #include "Rectangle.h"
@@ -63,7 +64,12 @@ private:
     bool splitNotLeafAxis(Node *curNode, Node *insertedNode);
     void sortForNotLeaf(Node **nodesArray, int axis, int bound);
 
+    //Метод поиска, вызвается публичным
+    void findObjectsInCircle(Circle searchArea, Node* curArea, std::vector<Place*> &result);
+
 public:
+
+    std::vector<Place*> findObjectInCircle(Point center, double radius);
     rTree(){
         root = new Node;
         root->parentNode = nullptr;
@@ -73,7 +79,5 @@ public:
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
     void insertPlace(Place& curPlace);
-
-    //TODO: Поиск объектов в заданом радиусе (findObjectsInArea)
     void Test();
 };
