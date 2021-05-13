@@ -223,7 +223,59 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
     double curOverlap;
     double curArea;
 
+    for (int i = 0; i < 1; ++i) {
+        sortForNotLeaf(newNodes, axisIsX, i);
+        for (int j = minCount - 1; j < maxCount - minCount; ++j) {
+            firstNode = new Node;
+            secondNode = new Node;
 
+            int curNode;
+            for (curNode = 0; curNode <= j ; curNode++) {
+                firstNode->nodes.push_back(newNodes[curNode]);
+            }
+
+            for (curNode = j;  curNode < maxCount - 1; curNode++) {
+                secondNode->nodes.push_back(newNodes[curNode]);
+            }
+
+            firstNode->updateMBR();
+            secondNode->updateMBR();
+
+            //TODO: написать перекрытие
+            //curOverlap =
+
+            if(curOverlap < minimalOverlap){
+                *(minimalFirstNode) = *(firstNode);
+                *(minimalSecondNode) = *(secondNode);
+                minimalOverlap = curOverlap;
+            }
+            else{
+                if (curOverlap == minimalOverlap){
+                    curArea = firstNode->MBR.area() + secondNode->MBR.area();
+                    if(curArea < minimalArea){
+                        *(minimalFirstNode) = *(firstNode);
+                        *(minimalSecondNode) = *(secondNode);
+                        minimalArea = curArea;
+                    }
+                }
+            }
+            delete firstNode;
+            delete secondNode;
+        }
+    }
+    //Бал сатаны 2.0
+    minimalFirstNode->parentNode = curNode->parentNode;
+    delete curNode;
+    curNode = minimalFirstNode;
+    minimalSecondNode->parentNode = curNode->parentNode;
+
+    if(curNode->parentNode->nodes.size() < maxCount){
+        curNode->parentNode->nodes.push_back(minimalSecondNode);
+        curNode->parentNode->updateMBR();
+    }
+    else{
+        splitNotLeafNode(curNode->parentNode, minimalSecondNode);
+    }
 }
 
 bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
