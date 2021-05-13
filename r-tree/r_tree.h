@@ -75,6 +75,19 @@ public:
         root->parentNode = nullptr;
         root->updateMBR();
     }
+
+    void showObjects(){
+        if(root->isLeaf()){
+            for (int i = 0; i < root->objects.size(); ++i) {
+                std::cout << root->objects[i]->name << std::endl;
+            }
+        }
+        else{
+            std::cout << "ROOT IS NOT LEAF" << std::endl;
+            std::cout << "NUM OF CHILDREN: " << root->nodes.size() << std::endl;
+        }
+    }
+
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
 
