@@ -130,6 +130,46 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
     }
 }
 
+void rTree::Test() {
+    Place **newPlaces = new Place*[8];
+    Place* p1 = new Place;
+    p1->longitude=1;
+    p1->latitude=1;
+    newPlaces[0]=p1;
+    Place* p2 = new Place;
+    p2->longitude=4;
+    p2->latitude=3;
+    newPlaces[1]=p2;
+    Place* p3 = new Place;
+    p3->longitude=10;
+    p3->latitude=5;
+    newPlaces[2]=p3;
+    Place* p4 = new Place;
+    p4->longitude=5;
+    p4->latitude=2;
+    newPlaces[3]=p4;
+    Place* p5 = new Place;
+    p5->longitude=2;
+    p5->latitude=3;
+    newPlaces[4]=p5;
+    Place* p6 = new Place;
+    p6->longitude=6;
+    p6->latitude=4;
+    newPlaces[5]=p6;
+    Place* p7 = new Place;
+    p7->longitude=7;
+    p7->latitude=2;
+    newPlaces[6]=p7;
+    Place* p8 = new Place;
+    p8->longitude=3;
+    p8->latitude=1;
+    newPlaces[7]=p8;
+    qsort(newPlaces, 8, sizeof(Place*), latAxisSort);
+    for (int i = 0; i < 8; ++i) {
+        std::cout << newPlaces[i]->longitude << " " << newPlaces[i]->latitude << std::endl;
+    }
+}
+
 void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
 
     Node *nodeParent;
@@ -221,13 +261,13 @@ bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
 
 //Сравнение по оси X (Lat)
 int rTree::latAxisSort (const void *a, const void *b){
-    const Place arg1 = *(static_cast<const Place*>(a));
-    const Place arg2 = *(static_cast<const Place*>(b));
-    if(arg1.latitude == arg2.latitude){
+    const Place *arg1 = *(const Place **)a;
+    const Place *arg2 = *(const Place **)b;
+    if(arg1->latitude == arg2->latitude){
         return 0;
     }
     else{
-        if(arg1.latitude < arg2.latitude){
+        if(arg1->latitude < arg2->latitude){
             return -1;
         }
         return 1;

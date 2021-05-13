@@ -2,6 +2,7 @@
 #include <cfloat>
 #include "../data/place.h"
 #include "Rectangle.h"
+#include <iostream>
 
 //Узел дерева
 struct Node{
@@ -69,4 +70,5 @@ public:
     void insertPlace(Place& curPlace);
 
     //TODO: Поиск объектов в заданом радиусе (findObjectsInArea)
+    void Test();
 };
