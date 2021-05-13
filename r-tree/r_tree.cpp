@@ -278,10 +278,10 @@ bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
         //Сортировка массива по оси
         //TODO: проверить sizeOf
         if(i){
-            qsort(newPlaces, maxCount + 1, sizeof(newPlaces[0]), latAxisSort);
+            qsort(newPlaces, maxCount + 1, sizeof(*newPlaces[0]), latAxisSort);
         }
         else{
-            qsort(newPlaces, maxCount + 1, sizeof(newPlaces[0]), longAxisSort);
+            qsort(newPlaces, maxCount + 1, sizeof(*newPlaces[0]), longAxisSort);
         }
 
         //Есть вероятность, что тут могут быть проблемы с индексами
@@ -308,21 +308,6 @@ bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
                 return 1;
             } else return 0;
         }
-    }
-}
-
-//Сравнение по оси X (Lat)
-int rTree::latAxisSort (const void *a, const void *b){
-    const Place *arg1 = *(const Place **)a;
-    const Place *arg2 = *(const Place **)b;
-    if(arg1->latitude == arg2->latitude){
-        return 0;
-    }
-    else{
-        if(arg1->latitude < arg2->latitude){
-            return -1;
-        }
-        return 1;
     }
 }
 
@@ -379,25 +364,41 @@ void rTree::sortForNotLeaf(Node **nodesArray, int axis, int bound){
     if(bound == 0){
         //TODO: проверить sizeOf
         if(axis == 0){
-            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), latLeftAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), longLeftAxisSort);
         }
         else{
-            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), longLeftAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), latLeftAxisSort);
         }
     }
     else{
         if(axis == 0){
-            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), latRightAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), longRightAxisSort);
         }
         else{
-            qsort(nodesArray, maxCount + 1, sizeof(nodesArray[0]), longRightAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), latRightAxisSort);
         }
     }
 }
 
 
 //Сортировка для массива мест
-//Сравнение по оси Y (Long)
+
+//Сравнение по оси Y (Lat)
+int rTree::latAxisSort (const void *a, const void *b){
+    const Place *arg1 = *(const Place **)a;
+    const Place *arg2 = *(const Place **)b;
+    if(arg1->latitude == arg2->latitude){
+        return 0;
+    }
+    else{
+        if(arg1->latitude < arg2->latitude){
+            return -1;
+        }
+        return 1;
+    }
+}
+
+//Сравнение по оси X (Long)
 int rTree::longAxisSort (const void *a, const void *b){
     const Place arg1 = *(static_cast<const Place*>(a));
     const Place arg2 = *(static_cast<const Place*>(b));
@@ -414,7 +415,7 @@ int rTree::longAxisSort (const void *a, const void *b){
 
 
 //Вспомогательные функции для быстрой сортировки узла
-int rTree::longLeftAxisSort (const void *a, const void *b){
+int rTree::latLeftAxisSort (const void *a, const void *b){
     const Node arg1 = *(static_cast<const Node*>(a));
     const Node arg2 = *(static_cast<const Node*>(b));
     if(arg1.MBR.getLeft().y == arg2.MBR.getLeft().y){
@@ -428,7 +429,7 @@ int rTree::longLeftAxisSort (const void *a, const void *b){
     }
 }
 
-int rTree::longRightAxisSort (const void *a, const void *b){
+int rTree::latRightAxisSort (const void *a, const void *b){
     const Node arg1 = *(static_cast<const Node*>(a));
     const Node arg2 = *(static_cast<const Node*>(b));
     if(arg1.MBR.getRight().y == arg2.MBR.getRight().y){
@@ -442,7 +443,7 @@ int rTree::longRightAxisSort (const void *a, const void *b){
     }
 }
 
-int rTree::latLeftAxisSort (const void *a, const void *b){
+int rTree::longLeftAxisSort (const void *a, const void *b){
     const Node arg1 = *(static_cast<const Node*>(a));
     const Node arg2 = *(static_cast<const Node*>(b));
     if(arg1.MBR.getLeft().x == arg2.MBR.getLeft().x){
@@ -456,7 +457,7 @@ int rTree::latLeftAxisSort (const void *a, const void *b){
     }
 }
 
-int rTree::latRightAxisSort (const void *a, const void *b){
+int rTree::longRightAxisSort (const void *a, const void *b){
     const Node arg1 = *(static_cast<const Node*>(a));
     const Node arg2 = *(static_cast<const Node*>(b));
     if(arg1.MBR.getRight().x == arg2.MBR.getRight().x){
@@ -489,5 +490,3 @@ void rTree::insertPlace(Place& curPlace) {
         splitLeafNode(chosenNode, curPlace);
     }
 }
-
-
