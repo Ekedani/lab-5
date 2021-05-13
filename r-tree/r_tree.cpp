@@ -93,18 +93,16 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         firstNode->updateMBR();
         secondNode->updateMBR();
 
-        //TODO: Перекрытие
-        //curOverlap = firstNode.MBR.overlap(secondNode.MBR)
+        curOverlap = firstNode->MBR.overlap(&secondNode->MBR);
 
         if(curOverlap < minimalOverlap){
-            //TODO: Конструктор копирования для Node
             *minimalFirstNode = *firstNode;
             *minimalSecondNode = *secondNode;
             minimalOverlap = curOverlap;
         }
         else{
             if(curOverlap == minimalOverlap){
-                curArea = firstNode->MBR.area() + secondNode->MBR.area();
+                curArea = firstNode->MBR.area() + secondNode->MBR.area() - curOverlap;
                 if(curArea < minimalArea){
                     *minimalFirstNode = *firstNode;
                     *minimalSecondNode = *secondNode;
@@ -241,8 +239,7 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
             firstNode->updateMBR();
             secondNode->updateMBR();
 
-            //TODO: написать перекрытие
-            //curOverlap =
+            curOverlap = firstNode->MBR.overlap(&secondNode->MBR);
 
             if(curOverlap < minimalOverlap){
                 *(minimalFirstNode) = *(firstNode);
@@ -251,7 +248,7 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
             }
             else{
                 if (curOverlap == minimalOverlap){
-                    curArea = firstNode->MBR.area() + secondNode->MBR.area();
+                    curArea = firstNode->MBR.area() + secondNode->MBR.area() - curOverlap;
                     if(curArea < minimalArea){
                         *(minimalFirstNode) = *(firstNode);
                         *(minimalSecondNode) = *(secondNode);
@@ -295,12 +292,11 @@ bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
         double curPerimeter = 0;
 
         //Сортировка массива по оси
-        //TODO: проверить sizeOf
         if(i){
-            qsort(newPlaces, maxCount + 1, sizeof(*newPlaces[0]), latAxisSort);
+            qsort(newPlaces, maxCount + 1, sizeof(Place*), latAxisSort);
         }
         else{
-            qsort(newPlaces, maxCount + 1, sizeof(*newPlaces[0]), longAxisSort);
+            qsort(newPlaces, maxCount + 1, sizeof(Place*), longAxisSort);
         }
 
         //Есть вероятность, что тут могут быть проблемы с индексами
@@ -381,20 +377,19 @@ bool rTree::splitNotLeafAxis(Node *curNode, Node *insertedNode){
 
 void rTree::sortForNotLeaf(Node **nodesArray, int axis, int bound){
     if(bound == 0){
-        //TODO: проверить sizeOf
         if(axis == 0){
-            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), longLeftAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(Node*), longLeftAxisSort);
         }
         else{
-            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), latLeftAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(Node*), latLeftAxisSort);
         }
     }
     else{
         if(axis == 0){
-            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), longRightAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(Node*), longRightAxisSort);
         }
         else{
-            qsort(nodesArray, maxCount + 1, sizeof(*nodesArray[0]), latRightAxisSort);
+            qsort(nodesArray, maxCount + 1, sizeof(Node*), latRightAxisSort);
         }
     }
 }
