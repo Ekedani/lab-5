@@ -1,5 +1,6 @@
 #include "r_tree.h"
 #include <vector>
+#include <iterator>
 Node* rTree::chooseSubtree(Place new_place) {
     return chooseSubtree(root, new_place);
 }
@@ -95,9 +96,11 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
 
         curOverlap = firstNode->MBR.overlap(&secondNode->MBR);
 
+        //TODO:точно не надо делиты?
         if(curOverlap < minimalOverlap){
             minimalFirstNode = firstNode;
             minimalSecondNode = secondNode;
+            minimalOverlap = curOverlap;
             continue;
         }
         else{
@@ -119,15 +122,25 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
     minimalSecondNode->nodeObjOutput();
     minimalSecondNode->MBRoutput();
     minimalFirstNode->parentNode = curNode->parentNode;
-    delete curNode;
-    curNode = minimalFirstNode;
-    std::cout << "First node MBR: " << std::endl;
-    curNode->MBRoutput();
-    std::cout << "Second node MBR: " << std::endl;
-    minimalSecondNode->MBRoutput();
     minimalSecondNode->parentNode = curNode->parentNode;
 
-    if(curNode->parentNode->nodes.size() < maxCount){
+    std::cout << "Strange things with leaves" << std::endl;
+    std::cout << "First node MBR: " << std::endl;
+    firstNode->MBRoutput();
+    std::cout << "Second node MBR: " << std::endl;
+    minimalSecondNode->MBRoutput();
+
+    //индекс, по которому живёт curNode в массиве родителя
+    int indexOfCurNodeInHerParent;
+    for (int i = 0; i < curNode->parentNode->nodes.size(); ++i) {
+        if (curNode->parentNode->nodes[i] == curNode) {
+            indexOfCurNodeInHerParent = i;
+        }
+    }
+
+    curNode->parentNode->nodes.erase(curNode->parentNode->nodes.begin()+indexOfCurNodeInHerParent);
+    if(curNode->parentNode->nodes.size() + 1< maxCount){
+        curNode->parentNode->nodes.push_back(minimalFirstNode);
         curNode->parentNode->nodes.push_back(minimalSecondNode);
         while(nullptr != nodeParent){
             std::cout << "UPDATED" << std::endl;
@@ -215,12 +228,31 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
         }
     }
     //Бал сатаны 2.0
+    minimalFirstNode->nodeObjOutput();
+    minimalFirstNode->MBRoutput();
+    minimalSecondNode->nodeObjOutput();
+    minimalSecondNode->MBRoutput();
+
     minimalFirstNode->parentNode = curNode->parentNode;
-    delete curNode;
-    curNode = minimalFirstNode;
     minimalSecondNode->parentNode = curNode->parentNode;
 
-    if(curNode->parentNode->nodes.size() < maxCount){
+    std::cout << "The output below is from splitNotLeafNode" << std::endl;
+    std::cout << "First node MBR: " << std::endl;
+    firstNode->MBRoutput();
+    std::cout << "Second node MBR: " << std::endl;
+    minimalSecondNode->MBRoutput();
+
+    //индекс, по которому живёт curNode в массиве родителя
+    int indexOfCurNodeInHerParent;
+    for (int i = 0; i < curNode->parentNode->nodes.size(); ++i) {
+        if (curNode->parentNode->nodes[i] == curNode) {
+            indexOfCurNodeInHerParent = i;
+        }
+    }
+    curNode->parentNode->nodes.erase(curNode->parentNode->nodes.begin()+indexOfCurNodeInHerParent);
+
+    if(curNode->parentNode->nodes.size()+1 < maxCount){
+        curNode->parentNode->nodes.push_back(minimalFirstNode);
         curNode->parentNode->nodes.push_back(minimalSecondNode);
         while(nullptr != nodeParent){
             std::cout << "UPDATED" << std::endl;
