@@ -34,7 +34,7 @@ Node* rTree::chooseSubtree(Node *start, Place new_place) {
 }
 
 //Если узел переполнен при вставке точки
-void rTree::splitLeafNode(Node *curNode, Place curPlace){
+void rTree::splitLeafNode(Node *curNode, Place *curPlace){
 
     Node *nodeParent;
     //В случае если является корнем дерева
@@ -43,6 +43,7 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         curNode->parentNode = nodeParent;
         nodeParent->nodes.push_back(curNode);
         root = nodeParent;
+        root->parentNode = nullptr;
     }
         //В случае если он им не является
     else{
@@ -53,7 +54,7 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
     for (int i = 0; i < maxCount; ++i){
         newPlaces[i] = curNode->objects[i];
     }
-    newPlaces[maxCount] = &curPlace;
+    newPlaces[maxCount] = curPlace;
 
     //Выбор оси разделения
     bool axisIsX = !splitLeafAxis(curNode, curPlace);
@@ -135,65 +136,6 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
     }
 }
 
-void rTree::Test() {
-    Place **newPlaces = new Place*[8];
-    Node **newNodes = new Node*[4];
-    Place* p1 = new Place;
-    p1->longitude=1;
-    p1->latitude=1;
-    newPlaces[0]=p1;
-    Place* p2 = new Place;
-    p2->longitude=2;
-    p2->latitude=3;
-    newPlaces[1]=p2;
-    Node* n1 = new Node;
-    n1->MBR = Rectangle(Point(p1->longitude, p1->latitude),Point(p2->longitude,p2->latitude));
-
-    Place* p3 = new Place;
-    p3->longitude=3;
-    p3->latitude=1;
-    newPlaces[2]=p3;
-    Place* p4 = new Place;
-    p4->longitude=5;
-    p4->latitude=2;
-    newPlaces[3]=p4;
-    Node* n2 = new Node;
-    n2->MBR = Rectangle(Point(p3->longitude, p3->latitude),Point(p4->longitude,p4->latitude));
-
-    Place* p5 = new Place;
-    p5->longitude=4;
-    p5->latitude=3;
-    newPlaces[4]=p5;
-    Place* p6 = new Place;
-    p6->longitude=6;
-    p6->latitude=4;
-    newPlaces[5]=p6;
-    Node* n3 = new Node;
-    n3->MBR = Rectangle(Point(p5->longitude, p5->latitude),Point(p6->longitude,p6->latitude));
-
-
-    Place* p7 = new Place;
-    p7->longitude=7;
-    p7->latitude=2;
-    newPlaces[6]=p7;
-    Place* p8 = new Place;
-    p8->longitude=10;
-    p8->latitude=5;
-    newPlaces[7]=p8;
-    Node* n4 = new Node;
-    n4->MBR = Rectangle(Point(p7->longitude, p7->latitude),Point(p8->longitude,p8->latitude));
-
-    newNodes[0] = n3;
-    newNodes[1] = n2;
-    newNodes[2] = n1;
-    newNodes[3] = n4;
-    qsort(newNodes, 4, sizeof(Node*), latLeftAxisSort);
-    for (int i = 0; i < 4; ++i) {
-        std::cout << newNodes[i]->MBR.getLeft().x << " " << newNodes[i]->MBR.getLeft().y << std::endl;
-        std::cout << newNodes[i]->MBR.getRight().x << " " << newNodes[i]->MBR.getRight().y << std::endl;
-    }
-}
-
 void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
 
     Node *nodeParent;
@@ -203,6 +145,7 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
         curNode->parentNode = nodeParent;
         nodeParent->nodes.push_back(curNode);
         root = nodeParent;
+        root->parentNode = nullptr;
     }
     //В случае если он им не является
     else{
@@ -282,12 +225,12 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
     }
 }
 
-bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
+bool rTree::splitLeafAxis(Node *curNode, Place *curPlace){
     Place **newPlaces = new Place*[maxCount + 1];
     for (int i = 0; i < maxCount; ++i){
         newPlaces[i] = curNode->objects[i];
     }
-    newPlaces[maxCount] = &curPlace;
+    newPlaces[maxCount] = curPlace;
 
     Node firstNode;
     Node secondNode;
@@ -508,7 +451,7 @@ void rTree::insertPlace(Place& curPlace) {
         }
     }
     else{
-        splitLeafNode(chosenNode, curPlace);
+        splitLeafNode(chosenNode, ptrToPlace);
     }
 }
 

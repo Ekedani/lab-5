@@ -62,8 +62,8 @@ private:
 
     //Методы, что используются во вставке элемента
     void splitNotLeafNode(Node *curNode, Node *insertedNode);
-    void splitLeafNode(Node *curNode, Place curPlace);
-    static bool splitLeafAxis(Node *curNode, Place curPlace);
+    void splitLeafNode(Node *curNode, Place *curPlace);
+    static bool splitLeafAxis(Node *curNode, Place *curPlace);
 
     //Вспомогательные методы для быстрой сортировки
     static int latAxisSort (const void *a, const void *b);
@@ -102,7 +102,5 @@ public:
 
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
-
     void insertPlace(Place& curPlace);
-    void Test();
 };
