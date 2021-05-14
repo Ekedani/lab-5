@@ -1,17 +1,23 @@
+#include <iostream>
+#include "data/output.h"
+#include "data/place_filereader.h"
 #include "r-tree/r_tree.h"
-#include "string"
-int main() {
-    rTree test;
-    Place *testPlace;
-    for (int i = 1; i < 300; ++i) {
-        testPlace = new Place;
-        testPlace->latitude = i;
-        testPlace->longitude = i;
-        testPlace->name = std::to_string(i);
-        test.insertPlace(*testPlace);
-    }
-    test.showObjects();
 
+using namespace std;
+int main() {
+    rTree tree;
+    std::string address = "C:\\Users\\koziu\\Desktop\\lab-5\\input.csv";
+    placeFileReader file(address);
+    Place *placePtr;
+    while(!file.endOfFile()){
+        placePtr = new Place;
+        *(placePtr) = file.readALine();
+        tree.insertPlace(*placePtr);
+    }
+    vector<Place*> places = tree.findObjectInCircle(Point(22.40971,48.89283), 30);
+    for (int i = 0; i < places.size(); ++i) {
+        cout << places[i]->latitude << " " << places[i]->longitude << endl;
+    }
     return 0;
 
 }

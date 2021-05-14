@@ -1,3 +1,4 @@
+#pragma once
 #include "Rectangle.h"
 double distance(const Point& p1, const Point& p2);
 
