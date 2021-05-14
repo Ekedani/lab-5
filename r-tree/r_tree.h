@@ -28,8 +28,9 @@ struct Node{
 
     void nodeObjOutput(){
         for (int i = 0; i < objects.size(); ++i) {
-            std::cout << objects[i]->name << std::endl;
+            std::cout << objects[i]->name << " ";
         }
+        std::cout << std::endl;
     }
 
     void updateMBR(){

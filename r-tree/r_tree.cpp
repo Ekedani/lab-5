@@ -12,7 +12,6 @@ Node* rTree::chooseSubtree(Node *start, Place new_place) {
         int index;
         Point point (new_place.longitude,new_place.latitude);
         double minimal_mbr_increasing_area = DBL_MAX;
-        std::vector<int> chosen_nodes;
         for (int i = 0; i < start->nodes.size(); ++i) {
             if (start->nodes[i]->MBR.HowMuchIncreasesTheArea(point) < minimal_mbr_increasing_area){
                 minimal_mbr_increasing_area = start->nodes[i]->MBR.HowMuchIncreasesTheArea(point);
@@ -129,7 +128,11 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
 
     if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
-        curNode->parentNode->updateMBR();
+        while(nullptr != nodeParent){
+            std::cout << "UPDATED" << std::endl;
+            nodeParent->updateMBR();
+            nodeParent = nodeParent->parentNode;
+        }
     }
     else{
         splitNotLeafNode(curNode->parentNode, minimalSecondNode);
@@ -218,7 +221,11 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
 
     if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
-        curNode->parentNode->updateMBR();
+        while(nullptr != nodeParent){
+            std::cout << "UPDATED" << std::endl;
+            nodeParent->updateMBR();
+            nodeParent = nodeParent->parentNode;
+        }
     }
     else{
         splitNotLeafNode(curNode->parentNode, minimalSecondNode);
@@ -439,19 +446,33 @@ int rTree::longRightAxisSort (const void *a, const void *b){
 
 //Вставка места в дерево
 void rTree::insertPlace(Place& curPlace) {
+    std:: cout << "=============================================" << std::endl;
     Node *chosenNode = chooseSubtree(root, curPlace);
     Place *ptrToPlace = &curPlace;
-
+    std:: cout << "Root MBR: ";
+    root->MBRoutput();
+    std::cout << "Chosen node MBR: ";
+    chosenNode->MBRoutput();
+    if(curPlace.name == "182"){
+        std::cout << chosenNode->nodes.size() << std::endl;
+    }
+    std::cout << chosenNode->parentNode << std::endl;
+    std::cout << chosenNode->nodes.size() << std::endl;
+    std::cout << chosenNode->objects.size() << std::endl;
     //Если узел не переполнен
     if(chosenNode->objects.size() < maxCount){
         chosenNode->objects.push_back(ptrToPlace);
-        while(chosenNode != NULL){
+        while(chosenNode != nullptr){
             chosenNode->updateMBR();
             chosenNode = chosenNode->parentNode;
         }
     }
     else{
         splitLeafNode(chosenNode, ptrToPlace);
+        for (int i = 0; i < root->nodes.size(); ++i) {
+            std::cout << "NORM ";
+        }
+        std::cout << std::endl;
     }
 }
 
