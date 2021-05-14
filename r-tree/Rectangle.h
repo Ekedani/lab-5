@@ -1,4 +1,7 @@
+#pragma once
+
 #include <cfloat>
+#include <cmath>
 
 //Будет использоваться как угол ограничивающего прямоугольника
 struct Point {

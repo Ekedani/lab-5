@@ -1,5 +1,6 @@
 #include "r_tree.h"
 #include <vector>
+
 Node* rTree::chooseSubtree(Place new_place) {
     return chooseSubtree(root, new_place);
 }
@@ -12,7 +13,6 @@ Node* rTree::chooseSubtree(Node *start, Place new_place) {
         int index;
         Point point (new_place.longitude,new_place.latitude);
         double minimal_mbr_increasing_area = DBL_MAX;
-        std::vector<int> chosen_nodes;
         for (int i = 0; i < start->nodes.size(); ++i) {
             if (start->nodes[i]->MBR.HowMuchIncreasesTheArea(point) < minimal_mbr_increasing_area){
                 minimal_mbr_increasing_area = start->nodes[i]->MBR.HowMuchIncreasesTheArea(point);
@@ -34,7 +34,7 @@ Node* rTree::chooseSubtree(Node *start, Place new_place) {
 }
 
 //Если узел переполнен при вставке точки
-void rTree::splitLeafNode(Node *curNode, Place curPlace){
+void rTree::splitLeafNode(Node *curNode, Place *curPlace){
 
     Node *nodeParent;
     //В случае если является корнем дерева
@@ -43,6 +43,7 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         curNode->parentNode = nodeParent;
         nodeParent->nodes.push_back(curNode);
         root = nodeParent;
+        root->parentNode = nullptr;
     }
         //В случае если он им не является
     else{
@@ -53,7 +54,7 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
     for (int i = 0; i < maxCount; ++i){
         newPlaces[i] = curNode->objects[i];
     }
-    newPlaces[maxCount] = &curPlace;
+    newPlaces[maxCount] = curPlace;
 
     //Выбор оси разделения
     bool axisIsX = !splitLeafAxis(curNode, curPlace);
@@ -75,8 +76,6 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort);
     }
 
-    //Пофиксить вероятный ужас с индексами
-    //и ноды бы заново создавать. не будет работать так
     for (int j = minCount - 1; j <= maxCount - minCount; ++j) {
 
         firstNode = new Node;
@@ -86,8 +85,8 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         for (curPlace; curPlace <= j; curPlace++) {
             firstNode->objects.push_back(newPlaces[curPlace]);
         }
-        for (curPlace; curPlace < maxCount - 1; curPlace++) {
-            secondNode->objects.push_back(newPlaces[curPlace + 1]);
+        for (curPlace; curPlace <= maxCount; curPlace++) {
+            secondNode->objects.push_back(newPlaces[curPlace]);
         }
 
         firstNode->updateMBR();
@@ -98,7 +97,7 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         if(curOverlap < minimalOverlap){
             *minimalFirstNode = *firstNode;
             *minimalSecondNode = *secondNode;
-            minimalOverlap = curOverlap;
+            minimalArea = curArea;
         }
         else{
             if(curOverlap == minimalOverlap){
@@ -113,77 +112,22 @@ void rTree::splitLeafNode(Node *curNode, Place curPlace){
         delete firstNode;
         delete secondNode;
     }
-    //Бал сатаны
+
     minimalFirstNode->parentNode = curNode->parentNode;
-    delete curNode;
-    curNode = minimalFirstNode;
     minimalSecondNode->parentNode = curNode->parentNode;
+
+    *curNode = *minimalFirstNode;
+    delete minimalFirstNode;
 
     if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
-        curNode->parentNode->updateMBR();
+        while(nullptr != nodeParent){
+            nodeParent->updateMBR();
+            nodeParent = nodeParent->parentNode;
+        }
     }
     else{
         splitNotLeafNode(curNode->parentNode, minimalSecondNode);
-    }
-}
-
-void rTree::Test() {
-    Place **newPlaces = new Place*[8];
-    Node **newNodes = new Node*[4];
-    Place* p1 = new Place;
-    p1->longitude=1;
-    p1->latitude=1;
-    newPlaces[0]=p1;
-    Place* p2 = new Place;
-    p2->longitude=2;
-    p2->latitude=3;
-    newPlaces[1]=p2;
-    Node* n1 = new Node;
-    n1->MBR = Rectangle(Point(p1->longitude, p1->latitude),Point(p2->longitude,p2->latitude));
-
-    Place* p3 = new Place;
-    p3->longitude=3;
-    p3->latitude=1;
-    newPlaces[2]=p3;
-    Place* p4 = new Place;
-    p4->longitude=5;
-    p4->latitude=2;
-    newPlaces[3]=p4;
-    Node* n2 = new Node;
-    n2->MBR = Rectangle(Point(p3->longitude, p3->latitude),Point(p4->longitude,p4->latitude));
-
-    Place* p5 = new Place;
-    p5->longitude=4;
-    p5->latitude=3;
-    newPlaces[4]=p5;
-    Place* p6 = new Place;
-    p6->longitude=6;
-    p6->latitude=4;
-    newPlaces[5]=p6;
-    Node* n3 = new Node;
-    n3->MBR = Rectangle(Point(p5->longitude, p5->latitude),Point(p6->longitude,p6->latitude));
-
-
-    Place* p7 = new Place;
-    p7->longitude=7;
-    p7->latitude=2;
-    newPlaces[6]=p7;
-    Place* p8 = new Place;
-    p8->longitude=10;
-    p8->latitude=5;
-    newPlaces[7]=p8;
-    Node* n4 = new Node;
-    n4->MBR = Rectangle(Point(p7->longitude, p7->latitude),Point(p8->longitude,p8->latitude));
-
-    newNodes[0] = n3;
-    newNodes[1] = n2;
-    newNodes[2] = n1;
-    newNodes[3] = n4;
-    qsort(newNodes, 4, sizeof(Node*), latLeftAxisSort);
-    for (int i = 0; i < 4; ++i) {
-        std::cout << newNodes[i]->MBR.getLeft().x << " " << newNodes[i]->MBR.getLeft().y << std::endl;
-        std::cout << newNodes[i]->MBR.getRight().x << " " << newNodes[i]->MBR.getRight().y << std::endl;
     }
 }
 
@@ -196,6 +140,7 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
         curNode->parentNode = nodeParent;
         nodeParent->nodes.push_back(curNode);
         root = nodeParent;
+        root->parentNode = nullptr;
     }
     //В случае если он им не является
     else{
@@ -260,27 +205,31 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
             delete secondNode;
         }
     }
-    //Бал сатаны 2.0
+
     minimalFirstNode->parentNode = curNode->parentNode;
-    delete curNode;
-    curNode = minimalFirstNode;
     minimalSecondNode->parentNode = curNode->parentNode;
+
+    *curNode = *minimalFirstNode;
+    delete minimalFirstNode;
 
     if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
-        curNode->parentNode->updateMBR();
+        while(nullptr != nodeParent){
+            nodeParent->updateMBR();
+            nodeParent = nodeParent->parentNode;
+        }
     }
     else{
         splitNotLeafNode(curNode->parentNode, minimalSecondNode);
     }
 }
 
-bool rTree::splitLeafAxis(Node *curNode, Place curPlace){
+bool rTree::splitLeafAxis(Node *curNode, Place *curPlace){
     Place **newPlaces = new Place*[maxCount + 1];
     for (int i = 0; i < maxCount; ++i){
         newPlaces[i] = curNode->objects[i];
     }
-    newPlaces[maxCount] = &curPlace;
+    newPlaces[maxCount] = curPlace;
 
     Node firstNode;
     Node secondNode;
@@ -493,14 +442,51 @@ void rTree::insertPlace(Place& curPlace) {
     Place *ptrToPlace = &curPlace;
 
     //Если узел не переполнен
-    if(chosenNode->nodes.size() < maxCount){
+    if(chosenNode->objects.size() < maxCount){
         chosenNode->objects.push_back(ptrToPlace);
-        while(chosenNode != NULL){
+        while(chosenNode != nullptr){
             chosenNode->updateMBR();
             chosenNode = chosenNode->parentNode;
         }
     }
     else{
-        splitLeafNode(chosenNode, curPlace);
+        splitLeafNode(chosenNode, ptrToPlace);
+    }
+}
+
+std::vector<Place*> rTree::findObjectInCircle(Point center, double radius){
+    Circle searchArea(center, radius);
+    std::vector<Place*> result;
+    if(root->isLeaf()){
+        for (auto & object : root->objects) {
+            if(searchArea.isInside(Point(object->longitude, object->latitude))){
+                result.push_back(object);
+            }
+        }
+    }
+    else{
+        for (auto & node : root->nodes) {
+            if(searchArea.doesIntersect(node->MBR)){
+                findObjectsInCircle(searchArea, node, result);
+            }
+        }
+    }
+    return result;
+}
+
+void rTree::findObjectsInCircle(Circle searchArea, Node* curArea, std::vector<Place*> &result){
+    if(curArea->isLeaf()){
+        for (auto & object : curArea->objects) {
+            if(searchArea.isInside(Point(object->longitude, object->latitude))){
+                result.push_back(object);
+            }
+        }
+    }
+    else{
+        for (auto & node : curArea->nodes) {
+            if(searchArea.doesIntersect(node->MBR)){
+                findObjectsInCircle(searchArea, node, result);
+            }
+        }
     }
 }
