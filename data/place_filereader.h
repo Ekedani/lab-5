@@ -1,3 +1,5 @@
+#pragma once
+
 #include <fstream>
 #include <string>
 #include "place.h"
@@ -9,13 +11,32 @@ class placeFileReader{
 private:
     std::string path;
     std::ifstream filePointer;
-public:
-    //Методы закрытия и открытия лучше переместить в приватные, а вместо них сделать конструкт/деструкт
-    //Вот тут кстати не уверен, что будет хорошо работать
+
     void openFile(std::string path){
         this->path = path;
         this->filePointer.open(path);
     }
+
+    void closeFile(){
+        this->filePointer.close();
+        this->path = "";
+    }
+
+public:
+    //Методы закрытия и открытия лучше переместить в приватные, а вместо них сделать конструкт/деструкт
+    //Вот тут кстати не уверен, что будет хорошо работать
+    placeFileReader(std::string path){
+        openFile(path);
+    }
+
+    ~placeFileReader(){
+        closeFile();
+    }
+
+    bool endOfFile(){
+        return filePointer.std::ios::eof();
+    }
+
 
     Place readALine(){
         //Берем строку
@@ -54,10 +75,5 @@ public:
         curPlace.address = info[3];
 
         return curPlace;
-    }
-
-    void closeFile(){
-        this->filePointer.close();
-        this->path = "";
     }
 };
