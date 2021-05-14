@@ -15,9 +15,7 @@ int main() {
         tree.insertPlace(*placePtr);
     }
     vector<Place*> places = tree.findObjectInCircle(Point(22.40971,48.89283), 30);
-    for (int i = 0; i < places.size(); ++i) {
-        cout << places[i]->latitude << " " << places[i]->longitude << endl;
-    }
+    outputWriter::showSearchResults(places);
     return 0;
 
 }

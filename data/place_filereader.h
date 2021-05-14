@@ -5,8 +5,6 @@
 #include "place.h"
 #include <vector>
 
-//TODO: Поддержка кириллицы
-
 class placeFileReader{
 private:
     std::string path;
