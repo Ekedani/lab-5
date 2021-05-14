@@ -114,16 +114,17 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
         delete secondNode;
     }
     //Бал сатаны
-    std::cout << minimalFirstNode->objects.size() << std::endl;
     minimalFirstNode->nodeObjOutput();
     minimalFirstNode->MBRoutput();
-    std::cout << minimalSecondNode->objects.size() << std::endl;
     minimalSecondNode->nodeObjOutput();
     minimalSecondNode->MBRoutput();
     minimalFirstNode->parentNode = curNode->parentNode;
     delete curNode;
     curNode = minimalFirstNode;
+    std::cout << "First node MBR: " << std::endl;
     curNode->MBRoutput();
+    std::cout << "Second node MBR: " << std::endl;
+    minimalSecondNode->MBRoutput();
     minimalSecondNode->parentNode = curNode->parentNode;
 
     if(curNode->parentNode->nodes.size() < maxCount){
@@ -456,8 +457,11 @@ void rTree::insertPlace(Place& curPlace) {
     if(curPlace.name == "182"){
         std::cout << chosenNode->nodes.size() << std::endl;
     }
+    std::cout << "Chosen node parent: ";
     std::cout << chosenNode->parentNode << std::endl;
+    std::cout << "Chosen node num of children: ";
     std::cout << chosenNode->nodes.size() << std::endl;
+    std::cout << "Chosen node num of objects : ";
     std::cout << chosenNode->objects.size() << std::endl;
     //Если узел не переполнен
     if(chosenNode->objects.size() < maxCount){
@@ -469,10 +473,6 @@ void rTree::insertPlace(Place& curPlace) {
     }
     else{
         splitLeafNode(chosenNode, ptrToPlace);
-        for (int i = 0; i < root->nodes.size(); ++i) {
-            std::cout << "NORM ";
-        }
-        std::cout << std::endl;
     }
 }
 
