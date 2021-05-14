@@ -4,9 +4,17 @@
 #include "r-tree/r_tree.h"
 
 using namespace std;
-int main() {
+int main(int argc, char** argv) {
+    if (argc != 5) {
+        cout << "Inappropriate number of arguments";
+        return -1;
+    }
+    std::string address = argv[1];
+    double latitude = stod(argv[2]);
+    double longitude = stod(argv[3]);
+    double radius = stod(argv[4]);
+
     rTree tree;
-    std::string address = "E:\\my-repos\\lab-5\\input.csv";
     placeFileReader file(address);
     Place *placePtr;
     while(!file.endOfFile()){
@@ -14,8 +22,7 @@ int main() {
         *(placePtr) = file.readALine();
         tree.insertPlace(*placePtr);
     }
-    vector<Place*> places = tree.findObjectInCircle(Point(22.40971,48.89283), 30);
+    vector<Place*> places = tree.findObjectInCircle(Point(longitude,latitude), radius);
     outputWriter::showSearchResults(places);
     return 0;
-
 }
