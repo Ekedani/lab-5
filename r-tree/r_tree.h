@@ -11,6 +11,11 @@ struct Node{
     Rectangle MBR;
     std::vector<Place*> objects;
     std::vector<Node*> nodes;
+
+    Node(){
+        parentNode = nullptr;
+    }
+
     bool isLeaf(){
         if (nodes.empty()) return true;
         return false;
@@ -28,24 +33,28 @@ struct Node{
     }
 
     void updateMBR(){
-        if (this->MBR.isEmpty()) {
-            if (!objects.empty()) {
-                MBR = Rectangle(Point(objects[0]->longitude,objects[0]->latitude),
-                                Point(objects[0]->longitude,objects[0]->latitude));
-            } else if (!isLeaf()){
-                MBR = Rectangle(nodes[0]->MBR.getLeft(), nodes[0]->MBR.getRight());
-            }
-        }
+        //если есть обьекты
         if (!objects.empty()) {
+            //создадим мбр на основе первого
+            MBR = Rectangle(Point(objects[0]->longitude,objects[0]->latitude),
+                            Point(objects[0]->longitude,objects[0]->latitude));
+            //если есть ещё - расширим MBR
             for (int i = 0; i < objects.size(); ++i) {
-                MBR.extendRectangleToPoint(Point(objects[i]->longitude, objects[i]->latitude));
+                MBR = MBR.extendRectangleToPoint(Point(objects[i]->longitude, objects[i]->latitude));
             }
+            return;
         }
-        if (!isLeaf()){
+
+        //если есть дочерние ноды
+        if (!isLeaf()) {
+            //создадим мбр по первой дочерней
+            MBR = Rectangle(nodes[0]->MBR.getLeft(), nodes[0]->MBR.getRight());
+            //если есть ещё - расширяем мбр
             for (int i = 0; i < nodes.size(); ++i) {
-                MBR.extendRectangleToPoint(nodes[i]->MBR.getLeft());
-                MBR.extendRectangleToPoint(nodes[i]->MBR.getRight());
+                MBR = MBR.extendRectangleToPoint(nodes[i]->MBR.getLeft());
+                MBR = MBR.extendRectangleToPoint(nodes[i]->MBR.getRight());
             }
+            return;
         }
     }
 };
