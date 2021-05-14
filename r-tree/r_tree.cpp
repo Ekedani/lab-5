@@ -124,23 +124,10 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
     minimalFirstNode->parentNode = curNode->parentNode;
     minimalSecondNode->parentNode = curNode->parentNode;
 
-    std::cout << "Strange things with leaves" << std::endl;
-    std::cout << "First node MBR: " << std::endl;
-    firstNode->MBRoutput();
-    std::cout << "Second node MBR: " << std::endl;
-    minimalSecondNode->MBRoutput();
+    *curNode = *minimalFirstNode;
+    delete minimalFirstNode;
 
-    //индекс, по которому живёт curNode в массиве родителя
-    int indexOfCurNodeInHerParent;
-    for (int i = 0; i < curNode->parentNode->nodes.size(); ++i) {
-        if (curNode->parentNode->nodes[i] == curNode) {
-            indexOfCurNodeInHerParent = i;
-        }
-    }
-
-    curNode->parentNode->nodes.erase(curNode->parentNode->nodes.begin()+indexOfCurNodeInHerParent);
-    if(curNode->parentNode->nodes.size() + 1< maxCount){
-        curNode->parentNode->nodes.push_back(minimalFirstNode);
+    if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
         while(nullptr != nodeParent){
             std::cout << "UPDATED" << std::endl;
@@ -236,23 +223,10 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
     minimalFirstNode->parentNode = curNode->parentNode;
     minimalSecondNode->parentNode = curNode->parentNode;
 
-    std::cout << "The output below is from splitNotLeafNode" << std::endl;
-    std::cout << "First node MBR: " << std::endl;
-    firstNode->MBRoutput();
-    std::cout << "Second node MBR: " << std::endl;
-    minimalSecondNode->MBRoutput();
+    *curNode = *minimalFirstNode;
+    delete minimalFirstNode;
 
-    //индекс, по которому живёт curNode в массиве родителя
-    int indexOfCurNodeInHerParent;
-    for (int i = 0; i < curNode->parentNode->nodes.size(); ++i) {
-        if (curNode->parentNode->nodes[i] == curNode) {
-            indexOfCurNodeInHerParent = i;
-        }
-    }
-    curNode->parentNode->nodes.erase(curNode->parentNode->nodes.begin()+indexOfCurNodeInHerParent);
-
-    if(curNode->parentNode->nodes.size()+1 < maxCount){
-        curNode->parentNode->nodes.push_back(minimalFirstNode);
+    if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
         while(nullptr != nodeParent){
             std::cout << "UPDATED" << std::endl;
