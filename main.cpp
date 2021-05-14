@@ -6,7 +6,7 @@
 using namespace std;
 int main() {
     rTree tree;
-    std::string address = "C:\\Users\\koziu\\Desktop\\lab-5\\input.csv";
+    std::string address = "E:\\my-repos\\lab-5\\input.csv";
     placeFileReader file(address);
     Place *placePtr;
     while(!file.endOfFile()){

@@ -1,6 +1,6 @@
 #include "r_tree.h"
 #include <vector>
-#include <iterator>
+
 Node* rTree::chooseSubtree(Place new_place) {
     return chooseSubtree(root, new_place);
 }
@@ -76,8 +76,6 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
         qsort(newPlaces, maxCount + 1, sizeof(double), latAxisSort);
     }
 
-    //Пофиксить вероятный ужас с индексами
-    //и ноды бы заново создавать. не будет работать так
     for (int j = minCount - 1; j <= maxCount - minCount; ++j) {
 
         firstNode = new Node;
@@ -96,12 +94,10 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
 
         curOverlap = firstNode->MBR.overlap(&secondNode->MBR);
 
-        //TODO:точно не надо делиты?
         if(curOverlap < minimalOverlap){
-            minimalFirstNode = firstNode;
-            minimalSecondNode = secondNode;
-            minimalOverlap = curOverlap;
-            continue;
+            *minimalFirstNode = *firstNode;
+            *minimalSecondNode = *secondNode;
+            minimalArea = curArea;
         }
         else{
             if(curOverlap == minimalOverlap){
@@ -116,11 +112,7 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
         delete firstNode;
         delete secondNode;
     }
-    //Бал сатаны
-    minimalFirstNode->nodeObjOutput();
-    minimalFirstNode->MBRoutput();
-    minimalSecondNode->nodeObjOutput();
-    minimalSecondNode->MBRoutput();
+
     minimalFirstNode->parentNode = curNode->parentNode;
     minimalSecondNode->parentNode = curNode->parentNode;
 
@@ -130,7 +122,6 @@ void rTree::splitLeafNode(Node *curNode, Place *curPlace){
     if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
         while(nullptr != nodeParent){
-            std::cout << "UPDATED" << std::endl;
             nodeParent->updateMBR();
             nodeParent = nodeParent->parentNode;
         }
@@ -214,11 +205,6 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
             delete secondNode;
         }
     }
-    //Бал сатаны 2.0
-    minimalFirstNode->nodeObjOutput();
-    minimalFirstNode->MBRoutput();
-    minimalSecondNode->nodeObjOutput();
-    minimalSecondNode->MBRoutput();
 
     minimalFirstNode->parentNode = curNode->parentNode;
     minimalSecondNode->parentNode = curNode->parentNode;
@@ -229,7 +215,6 @@ void rTree::splitNotLeafNode(Node *curNode, Node *insertedNode){
     if(curNode->parentNode->nodes.size() < maxCount){
         curNode->parentNode->nodes.push_back(minimalSecondNode);
         while(nullptr != nodeParent){
-            std::cout << "UPDATED" << std::endl;
             nodeParent->updateMBR();
             nodeParent = nodeParent->parentNode;
         }
@@ -453,22 +438,9 @@ int rTree::longRightAxisSort (const void *a, const void *b){
 
 //Вставка места в дерево
 void rTree::insertPlace(Place& curPlace) {
-    std:: cout << "=============================================" << std::endl;
     Node *chosenNode = chooseSubtree(root, curPlace);
     Place *ptrToPlace = &curPlace;
-    std:: cout << "Root MBR: ";
-    root->MBRoutput();
-    std::cout << "Chosen node MBR: ";
-    chosenNode->MBRoutput();
-    if(curPlace.name == "182"){
-        std::cout << chosenNode->nodes.size() << std::endl;
-    }
-    std::cout << "Chosen node parent: ";
-    std::cout << chosenNode->parentNode << std::endl;
-    std::cout << "Chosen node num of children: ";
-    std::cout << chosenNode->nodes.size() << std::endl;
-    std::cout << "Chosen node num of objects : ";
-    std::cout << chosenNode->objects.size() << std::endl;
+
     //Если узел не переполнен
     if(chosenNode->objects.size() < maxCount){
         chosenNode->objects.push_back(ptrToPlace);

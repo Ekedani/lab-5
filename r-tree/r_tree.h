@@ -21,18 +21,6 @@ struct Node{
         return false;
     }
 
-    void MBRoutput(){
-        std::cout << "LEFT: " << MBR.getLeft().x << " " << MBR.getLeft().y << " ";
-        std::cout << "RIGHT: " << MBR.getRight().x << " " << MBR.getRight().y << std::endl;
-    }
-
-    void nodeObjOutput(){
-        for (int i = 0; i < objects.size(); ++i) {
-            std::cout << objects[i]->name << " ";
-        }
-        std::cout << std::endl;
-    }
-
     void updateMBR(){
         //если есть обьекты
         if (!objects.empty()) {
@@ -83,6 +71,7 @@ private:
     static int latLeftAxisSort (const void *a, const void *b);
     static int latRightAxisSort (const void *a, const void *b);
 
+    //Разделение не-листка
     bool splitNotLeafAxis(Node *curNode, Node *insertedNode);
     void sortForNotLeaf(Node **nodesArray, int axis, int bound);
 
@@ -92,22 +81,12 @@ private:
 public:
 
     std::vector<Place*> findObjectInCircle(Point center, double radius);
+
+    //Конструктор дерева
     rTree(){
         root = new Node;
         root->parentNode = nullptr;
         root->updateMBR();
-    }
-
-    void showObjects(){
-        if(root->isLeaf()){
-            for (int i = 0; i < root->objects.size(); ++i) {
-                std::cout << root->objects[i]->name << std::endl;
-            }
-        }
-        else{
-            std::cout << "ROOT IS NOT LEAF" << std::endl;
-            std::cout << "NUM OF CHILDREN: " << root->nodes.size() << std::endl;
-        }
     }
 
     Node* chooseSubtree(Place new_place);
