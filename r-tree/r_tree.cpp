@@ -1,5 +1,6 @@
 #include "r_tree.h"
 #include <vector>
+#include <algorithm>
 
 Node* rTree::chooseSubtree(Place new_place) {
     return chooseSubtree(root, new_place);
@@ -489,4 +490,64 @@ void rTree::findObjectsInCircle(Circle searchArea, Node* curArea, std::vector<Pl
             }
         }
     }
+}
+
+void rTree::findSpecificObjectsInCircle(Circle searchArea, Node* curArea, std::vector<Place*> &result, std::string type){
+    if(curArea->isLeaf()){
+        for (auto & object : curArea->objects) {
+            if(searchArea.isInside(Point(object->longitude, object->latitude)) && object->type == type){
+                result.push_back(object);
+            }
+        }
+    }
+    else{
+        for (auto & node : curArea->nodes) {
+            if(searchArea.doesIntersect(node->MBR)){
+                findSpecificObjectsInCircle(searchArea, node, result, type);
+            }
+        }
+    }
+}
+
+std::vector<Place*> rTree::findSpecificObjectInCircle(Point center, double radius, std::string type){
+    Circle searchArea(center, radius);
+    std::vector<Place*> result;
+    if(root->isLeaf()){
+        for (auto & object : root->objects) {
+            if(searchArea.isInside(Point(object->longitude, object->latitude)) && object->type == type){
+                result.push_back(object);
+            }
+        }
+    }
+    else{
+        for (auto & node : root->nodes) {
+            if(searchArea.doesIntersect(node->MBR)){
+                findSpecificObjectsInCircle(searchArea, node, result, type);
+            }
+        }
+    }
+    return result;
+}
+
+void sortTheVector(std::vector<Place*> &AllPlaces) {
+    //Insertion sort
+    for (int i = 1; i < AllPlaces.size(); i++) {
+        for (int j = i; j > 0 && AllPlaces[j - 1]->distance > AllPlaces[j]->distance; j--) {
+            std::swap(AllPlaces[j - 1], AllPlaces[j]);
+        }
+    }
+}
+
+std::vector<Place*> rTree::findFirstNObjectsOfType(Point center, int number,std::string type) {
+    std::vector<Place*> result;
+    for (int i = 1; i < 20038; i=i*2) {
+        result = findSpecificObjectInCircle(center, i, type);
+        if (result.size() >= number) break;
+    }
+    for (int j = 0; j < result.size(); ++j) {
+        result[j]->distance = distance(center, Point(result[j]->longitude, result[j]->latitude));
+    }
+    sortTheVector(result);
+    result.erase(result.begin()+number, result.end());
+    return result;
 }

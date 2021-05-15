@@ -71,6 +71,8 @@ private:
     static int latLeftAxisSort (const void *a, const void *b);
     static int latRightAxisSort (const void *a, const void *b);
 
+    static int compareByDist(const void *a, const void *b);
+
     //Разделение не-листка
     bool splitNotLeafAxis(Node *curNode, Node *insertedNode);
     void sortForNotLeaf(Node **nodesArray, int axis, int bound);
@@ -92,4 +94,7 @@ public:
     Node* chooseSubtree(Place new_place);
     Node* chooseSubtree(Node* start, Place new_place); // эта штука в приватные потом переместится, т.к её вызывает метод выше.
     void insertPlace(Place& curPlace);
+    void findSpecificObjectsInCircle(Circle searchArea, Node* curArea, std::vector<Place*> &result, std::string type);
+    std::vector<Place*> findSpecificObjectInCircle(Point center, double radius, std::string type);
+    std::vector<Place*> findFirstNObjectsOfType(Point center, int number, std::string type);
 };

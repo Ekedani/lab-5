@@ -8,4 +8,5 @@ struct Place{
     std::string subtype;
     std::string name;
     std::string address;
+    double distance;
 };
